@@ -39,7 +39,7 @@ public class EventType {
         return types.get(id);
     }
 
-    public EventType getByName(String name) {
+    public static EventType getByName(String name) {
         for (EventType type : types.values()) {
             if (type.name.equals(name))
                 return type;
@@ -50,6 +50,14 @@ public class EventType {
 
     public String getName() {
         return name;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public int getIcon() {
+        return icon;
     }
 
 

@@ -16,16 +16,20 @@ import ru.samara.mapapp.R;
 
 public class Event {
     int id;
-    Integer type;
+    Integer typeId;
+    EventType type;
     LatLng location;
     String name, shortDescription;
     GregorianCalendar date;
 
-    public Event(int id, String name, String shortDescription, GregorianCalendar date) {
+    public Event(int id, Integer typeId, LatLng location, String name, String shortDescription, GregorianCalendar date) {
         this.id = id;
+        this.typeId = typeId;
+        this.location = location;
         this.name = name;
         this.shortDescription = shortDescription;
         this.date = date;
+        type = EventType.getType(typeId);
     }
 
     public LinearLayout getVisual(Context context) {
@@ -35,7 +39,7 @@ public class Event {
         mainLayout.setLayoutParams(params);
 
         ImageView icon = new ImageView(context);
-        icon.setImageResource(R.drawable.sport);
+        icon.setImageResource(type.getIcon());
         mainLayout.addView(icon);
 
         LinearLayout layout0 = new LinearLayout(context);
@@ -79,5 +83,9 @@ public class Event {
         mainLayout.addView(button);
 
         return mainLayout;
+    }
+
+    public Integer getTypeId() {
+        return typeId;
     }
 }

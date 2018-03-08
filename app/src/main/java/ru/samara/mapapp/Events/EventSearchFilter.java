@@ -1,5 +1,5 @@
 package ru.samara.mapapp.Events;
 
 public interface EventSearchFilter {
-    boolean accept
+    boolean suit(Event event);
 }

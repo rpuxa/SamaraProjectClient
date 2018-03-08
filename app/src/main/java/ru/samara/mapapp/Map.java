@@ -10,7 +10,6 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 public class Map {
-    MapFragment fragment;
     GoogleMap map;
 
     public Map() {
