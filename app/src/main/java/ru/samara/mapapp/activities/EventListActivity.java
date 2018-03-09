@@ -1,10 +1,12 @@
-package ru.samara.mapapp.Activities;
+package ru.samara.mapapp.activities;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.CheckBox;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 
@@ -14,15 +16,15 @@ import java.util.ArrayList;
 import java.util.GregorianCalendar;
 
 import ru.samara.mapapp.ActivityUtils;
-import ru.samara.mapapp.Events.Event;
-import ru.samara.mapapp.Events.EventSearchFilter;
-import ru.samara.mapapp.Events.EventType;
-import ru.samara.mapapp.Events.EventsList;
 import ru.samara.mapapp.R;
+import ru.samara.mapapp.events.Event;
+import ru.samara.mapapp.events.EventSearchFilter;
+import ru.samara.mapapp.events.EventType;
+import ru.samara.mapapp.events.EventsList;
 
 public class EventListActivity extends AppCompatActivity {
 
-    EventsList list = new EventsList();
+    public static final EventsList list = new EventsList();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,8 +32,21 @@ public class EventListActivity extends AppCompatActivity {
         setContentView(R.layout.event_list);
         setEventTypeSpinner();
         setListeners();
-        for (int i = 0; i < 100; i++)
-            list.addEvent(new Event(123, 0, new LatLng(53, 54), "Name", "description verylongasasasasasasasasasasasdasdasdsaaaaaaaaaaaasdsdsdsdsd", new GregorianCalendar(2018, 3, 18, 9, 0)));
+        ActivityUtils.changeActivity(this, CreateEventActivity.class);
+        for (int i = 0; i < 10; i++)
+            list.addEvent(new Event(123, 0, new LatLng(53, 54), "Name", "description verylongasasasasasasasasasasasdasdasdsaaaaaaaaaaaasdsdsdsdsd", new GregorianCalendar(2018, 3, 18, 9, 0), 0));
+
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent intent) {
+        IntentResult scanResult = IntentIntegrator.parseActivityResult(requestCode, resultCode, intent);
+        if (scanResult != null) {
+            String a = scanResult.getContents();
+            System.out.println();
+        } else {
+            System.out.println();
+        }
 
     }
 
@@ -69,6 +84,8 @@ public class EventListActivity extends AppCompatActivity {
             for (Event event : list.getEvents())
                 container.addView(event.getVisual(this));
         });
+        final CheckBox checkBox = (CheckBox) findViewById(R.id.isPaid);
+        list.addFilter(event -> checkBox.isChecked() == event.isPaid());
     }
 
 }

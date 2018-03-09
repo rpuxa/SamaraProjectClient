@@ -1,15 +1,14 @@
-package ru.samara.mapapp.Events;
+package ru.samara.mapapp.events;
 
 import android.support.annotation.IdRes;
-import android.util.SparseArray;
 
 import java.util.HashMap;
 import java.util.Map;
 
 import ru.samara.mapapp.R;
 
-import static ru.samara.mapapp.Events.EventType.Types.MUSEUM;
-import static ru.samara.mapapp.Events.EventType.Types.SPORT;
+import static ru.samara.mapapp.events.EventType.Types.MUSEUM;
+import static ru.samara.mapapp.events.EventType.Types.SPORT;
 
 public class EventType {
     private int id;

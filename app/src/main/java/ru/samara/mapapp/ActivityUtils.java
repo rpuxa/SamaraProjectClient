@@ -1,5 +1,7 @@
 package ru.samara.mapapp;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.view.View;
 
 public final class ActivityUtils {
@@ -11,5 +13,10 @@ public final class ActivityUtils {
             view.setVisibility(View.VISIBLE);
         else
             view.setVisibility(View.GONE);
+    }
+
+    public static void changeActivity(Activity from, Class<? extends Activity> to) {
+        Intent intent = new Intent(from, to);
+        from.startActivity(intent);
     }
 }

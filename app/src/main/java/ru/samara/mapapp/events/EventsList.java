@@ -1,4 +1,4 @@
-package ru.samara.mapapp.Events;
+package ru.samara.mapapp.events;
 
 import java.util.ArrayList;
 
