@@ -19,4 +19,5 @@ public final class ActivityUtils {
         Intent intent = new Intent(from, to);
         from.startActivity(intent);
     }
+
 }

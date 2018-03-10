@@ -1,5 +1,6 @@
 package ru.samara.mapapp.activities;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -7,6 +8,8 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.Spinner;
+
+import com.google.android.gms.maps.model.LatLng;
 
 import java.util.ArrayList;
 
@@ -18,6 +21,7 @@ import ru.samara.mapapp.events.EventType;
 public class CreateEventActivity extends AppCompatActivity {
 
     Integer typeSelected = null;
+    LatLng locationSelected = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,8 +50,19 @@ public class CreateEventActivity extends AppCompatActivity {
         });
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == MapActivity.REQUEST_CODE_MAP_CHOSE_LOCATION) {
+            findViewById(R.id.newEventShowLocation).setEnabled(true);
+            locationSelected = (LatLng) data.getExtras().get(MapActivity.MAP_CHOSE_LOCATION);
+        }
+    }
+
     private void setListeners() {
         findViewById(R.id.createButton).setOnClickListener(v -> createEvent());
+        findViewById(R.id.newEventShowLocation).setOnClickListener(v -> MapActivity.gotoLocation(this, locationSelected));
+        findViewById(R.id.newEventChoseLocation).setOnClickListener(v -> MapActivity.getLocation(this));
     }
 
     private void createEvent() {

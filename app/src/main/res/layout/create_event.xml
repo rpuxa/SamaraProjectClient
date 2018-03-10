@@ -13,7 +13,7 @@
         android:textSize="24sp" />
 
     <ScrollView
-        android:id="@+id/newEventName"
+        android:id="@+id/scrollView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
@@ -79,6 +79,32 @@
                     android:ems="10"
                     android:hint="Дата проведения"
                     android:inputType="date" />
+            </TableRow>
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <TextView
+                    android:id="@+id/textView8"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Место проведения"
+                    android:textSize="18sp" />
+
+                <Button
+                    android:id="@+id/newEventShowLocation"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:enabled="false"
+                    android:text="Посмотреть" />
+
+                <Button
+                    android:id="@+id/newEventChoseLocation"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Выбрать..." />
             </TableRow>
 
             <TableRow

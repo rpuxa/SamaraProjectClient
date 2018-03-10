@@ -14,9 +14,8 @@ import com.google.android.gms.maps.model.LatLng;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
-import ru.samara.mapapp.ActivityUtils;
-import ru.samara.mapapp.activities.MapActivity;
 import ru.samara.mapapp.R;
+import ru.samara.mapapp.activities.MapActivity;
 
 public class Event {
     private int id;
@@ -97,8 +96,7 @@ public class Event {
     }
 
     private  void openMap(Activity activity) {
-        ActivityUtils.changeActivity(activity, MapActivity.class);
-        MapActivity.gotoLocation = location;
+        MapActivity.gotoLocation(activity, location);
     }
 
     public Integer getTypeId() {
