@@ -53,7 +53,7 @@ public class CreateEventActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == MapActivity.REQUEST_CODE_MAP_CHOSE_LOCATION) {
+        if (requestCode == MapActivity.REQUEST_CODE_MAP_CHOSE_LOCATION && resultCode == RESULT_OK) {
             findViewById(R.id.newEventShowLocation).setEnabled(true);
             locationSelected = (LatLng) data.getExtras().get(MapActivity.MAP_CHOSE_LOCATION);
         }

@@ -83,12 +83,14 @@
 
             <TableRow
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="wrap_content"
+                android:layout_weight="2">
 
                 <TextView
                     android:id="@+id/textView8"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="fill"
                     android:layout_weight="1"
                     android:text="Место проведения"
                     android:textSize="18sp" />
@@ -118,15 +120,11 @@
                     android:text="Тип мероприятия:"
                     android:textSize="18sp" />
 
-                <Space
+                <Spinner
+                    android:id="@+id/newEventType"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1" />
-
-                <Spinner
-                    android:id="@+id/newEventType"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
 
             </TableRow>
 

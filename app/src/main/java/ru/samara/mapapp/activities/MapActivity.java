@@ -13,6 +13,7 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import ru.samara.mapapp.R;
@@ -48,20 +49,21 @@ public class MapActivity extends AppCompatActivity {
             } else if (action == GET_LOCATION) {
                 buttonLayout.setVisibility(View.VISIBLE);
                 accept.setEnabled(false);
-                MarkerOptions marker = new MarkerOptions().draggable(true).title("Выберете место");
                 final LatLng[] markerLocation = {null};
+                final Marker[] marker = new Marker[1];
                 map.setOnMapClickListener(location -> {
-                    if (markerLocation[0] == null) {
-                        markerLocation[0] = location;
-                        googleMap.addMarker(marker);
+                    if (marker[0] == null) {
                         accept.setEnabled(true);
-                    }
-                    marker.position(location);
+                    } else
+                        marker[0].remove();
+                    markerLocation[0] = location;
+                    marker[0] = map.addMarker(new MarkerOptions().draggable(true).title("Выберете место").position(location));
                 });
                 accept.setOnClickListener(view -> {
                     Intent intent = new Intent();
                     setResult(RESULT_OK, intent);
                     intent.putExtra(MAP_CHOSE_LOCATION, markerLocation[0]);
+                    finish();
                 });
             }
         });
@@ -85,13 +87,14 @@ public class MapActivity extends AppCompatActivity {
 
     public static void gotoLocation(Activity activity, LatLng location) {
         Intent intent = new Intent(activity, MapActivity.class);
-        intent.putExtra(MapActivity.ACTION, MapActivity.GOTO_LOCATION);
-        intent.putExtra(MapActivity.VALUE, location);
+        intent.putExtra(ACTION, GOTO_LOCATION);
+        intent.putExtra(VALUE, location);
         activity.startActivity(intent);
     }
 
     public static void getLocation(Activity activity) {
         Intent intent = new Intent(activity, MapActivity.class);
+        intent.putExtra(ACTION, GET_LOCATION);
         activity.startActivityForResult(intent, REQUEST_CODE_MAP_CHOSE_LOCATION);
     }
 }
