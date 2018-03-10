@@ -32,9 +32,8 @@ public class EventListActivity extends AppCompatActivity {
         setContentView(R.layout.event_list);
         setEventTypeSpinner();
         setListeners();
-        ActivityUtils.changeActivity(this, CreateEventActivity.class);
         for (int i = 0; i < 10; i++)
-            list.addEvent(new Event(123, 0, new LatLng(53, 54), "Name", "description verylongasasasasasasasasasasasdasdasdsaaaaaaaaaaaasdsdsdsdsd", new GregorianCalendar(2018, 3, 18, 9, 0), 0));
+            list.addEvent(new Event(123, 0, new LatLng(53, 54), "Name", "description verylongasasasasasasasasasasasdasdasdsaaaaaaaaaaaasdsdsdsdsd", "" , new GregorianCalendar(2018, 3, 18, 9, 0), 0));
 
     }
 
@@ -86,6 +85,7 @@ public class EventListActivity extends AppCompatActivity {
         });
         final CheckBox checkBox = (CheckBox) findViewById(R.id.isPaid);
         list.addFilter(event -> checkBox.isChecked() == event.isPaid());
+        findViewById(R.id.createEventButton).setOnClickListener(view -> ActivityUtils.changeActivity(this, CreateEventActivity.class));
     }
 
 }

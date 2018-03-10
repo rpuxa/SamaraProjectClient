@@ -23,11 +23,11 @@ public class Event {
     private Integer typeId;
     private EventType type;
     private LatLng location;
-    private String name, shortDescription;
+    private String name, shortDescription, longDescription;
     private GregorianCalendar date;
     private int cost;
 
-    public Event(int id, Integer typeId, LatLng location, String name, String shortDescription, GregorianCalendar date, int cost) {
+    public Event(int id, Integer typeId, LatLng location, String name, String shortDescription, String longDescription, GregorianCalendar date, int cost) {
         this.id = id;
         this.typeId = typeId;
         this.location = location;
@@ -35,6 +35,7 @@ public class Event {
         this.shortDescription = shortDescription;
         this.date = date;
         this.cost = cost;
+        this.longDescription = longDescription;
         type = EventType.getType(typeId);
     }
 

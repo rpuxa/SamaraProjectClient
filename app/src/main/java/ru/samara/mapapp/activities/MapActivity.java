@@ -13,30 +13,40 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import ru.samara.mapapp.R;
 
 public class MapActivity extends AppCompatActivity {
-    public static LatLng gotoLocation;
+    public static final int GOTO_LOCATION = 0;
+    public static final int GET_LOCATION = 1;
+
+    public static final String ACTION = "name";
+    public static final String VALUE = "value";
+
     GoogleMap map;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.map);
-        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
-                .findFragmentById(R.id.map);
-        mapFragment.getMapAsync(googleMap -> {
+        ((SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map)).getMapAsync(googleMap -> {
             map = googleMap;
-            openLocation();
-            addMarker();
+            int action = (int) getIntent().getExtras().get(ACTION);
+            Object value = getIntent().getExtras().get(VALUE);
+            if (action == GOTO_LOCATION) {
+                LatLng location = (LatLng) value;
+                openLocation(location);
+                addMarker(location);
+            } else if (action == GET_LOCATION) {
+
+            }
         });
 
     }
 
-    public void openLocation() {
-        map.moveCamera(CameraUpdateFactory.newCameraPosition(CameraPosition.fromLatLngZoom(gotoLocation, 10)));
+    public void openLocation(LatLng location) {
+        map.moveCamera(CameraUpdateFactory.newCameraPosition(CameraPosition.fromLatLngZoom(location, 10)));
     }
 
-    public void addMarker() {
+    public void addMarker(LatLng location) {
         map.addMarker(new MarkerOptions()
-                .position(gotoLocation)
+                .position(location)
                 .title("Вот сюда нам нужно")
                 .draggable(false));
     }
