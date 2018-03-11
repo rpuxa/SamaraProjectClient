@@ -1,8 +1,8 @@
 package ru.samara.mapapp.activities;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -29,7 +29,10 @@ public class EventListActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.event_list);
+        setContentView(R.layout.main_activity);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
         setEventTypeSpinner();
         setListeners();
         ListView mainEventList = (ListView) findViewById(R.id.mainEventList);
@@ -47,17 +50,6 @@ public class EventListActivity extends AppCompatActivity {
         mainEventList.setAdapter(list);
     }
 
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent intent) {
-        IntentResult scanResult = IntentIntegrator.parseActivityResult(requestCode, resultCode, intent);
-        if (scanResult != null) {
-            String a = scanResult.getContents();
-            System.out.println();
-        } else {
-            System.out.println();
-        }
-
-    }
 
     private void setEventTypeSpinner() {
         Spinner spinner = (Spinner) findViewById(R.id.eventTypeSpinner);
