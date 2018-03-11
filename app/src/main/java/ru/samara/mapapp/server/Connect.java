@@ -1,24 +1,32 @@
 package ru.samara.mapapp.server;
 
 import android.os.AsyncTask;
-import android.util.Log;
+
+import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
-public class Connect extends AsyncTask<Void, Void, Void> {
+public class Connect extends AsyncTask<String, Void, JSONObject> {
+
+    private static final String ADDRESS = "http://54.38.186.12/";
+
     @Override
-    protected Void doInBackground(Void... voids) {
-        getAnswer();
-        return null;
+    protected JSONObject doInBackground(String... strings) {
+        return getAnswer(strings[0], strings);
     }
 
-    public void getAnswer() {
-
+    public JSONObject getAnswer(String command, String... args) {
+        JSONObject object = null;
+        String stringArgs = "?";
+        for (int i = 1; i < args.length; i += 2) {
+            stringArgs += args[i] + "=" + args[i + 1] + "&";
+        }
+        stringArgs = stringArgs.substring(0, stringArgs.length() - 1);
         try {
-            URL url = new URL("http://54.38.186.12/showallevents");
+            URL url = new URL(ADDRESS + command + stringArgs);
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
             connection.setRequestMethod("GET");
             connection.setUseCaches(false);
@@ -32,10 +40,8 @@ public class Connect extends AsyncTask<Void, Void, Void> {
                 while ((line = reader.readLine()) != null) {
                     answer += line;
                 }
-
                 reader.close();
-
-                Log.d("tag", answer);
+                object = new JSONObject(answer);
             }
 
             connection.disconnect();
@@ -43,5 +49,6 @@ public class Connect extends AsyncTask<Void, Void, Void> {
         } catch (Exception e) {
             e.printStackTrace();
         }
+        return object;
     }
 }
