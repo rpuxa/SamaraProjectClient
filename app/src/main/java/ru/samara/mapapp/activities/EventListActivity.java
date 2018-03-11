@@ -7,7 +7,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
-import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.Spinner;
 
 import com.google.android.gms.maps.model.LatLng;
@@ -24,7 +24,7 @@ import ru.samara.mapapp.events.EventsList;
 
 public class EventListActivity extends AppCompatActivity {
 
-    public static final EventsList list = new EventsList();
+    EventsList list = new EventsList(this);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,9 +32,19 @@ public class EventListActivity extends AppCompatActivity {
         setContentView(R.layout.event_list);
         setEventTypeSpinner();
         setListeners();
+        ListView mainEventList = (ListView) findViewById(R.id.mainEventList);
         for (int i = 0; i < 10; i++)
-            list.addEvent(new Event(123, 0, new LatLng(53, 54), "Name", "description verylongasasasasasasasasasasasdasdasdsaaaaaaaaaaaasdsdsdsdsd", "" , new GregorianCalendar(2018, 3, 18, 9, 0), 0));
-
+            list.addEvent(new Event(123,
+                    0,
+                    new LatLng(53, 54),
+                    "Name", "description",
+                    "",
+                    new GregorianCalendar(2018, 3, 18, 9, 0),
+                    0,
+                    mainEventList,
+                    this
+                    ));
+        mainEventList.setAdapter(list);
     }
 
     @Override
@@ -77,12 +87,7 @@ public class EventListActivity extends AppCompatActivity {
 
     private void setListeners() {
         findViewById(R.id.settings).setOnClickListener(v -> ActivityUtils.changeVisible(findViewById(R.id.settingsLayout)));
-        findViewById(R.id.search).setOnClickListener(v -> {
-            LinearLayout container = (LinearLayout) findViewById(R.id.mainList);
-            container.removeAllViews();
-            for (Event event : list.getEvents())
-                container.addView(event.getVisual(this));
-        });
+        findViewById(R.id.search).setOnClickListener(v -> list.notifyDataSetChanged());
         final CheckBox checkBox = (CheckBox) findViewById(R.id.isPaid);
         list.addFilter(event -> checkBox.isChecked() == event.isPaid());
         findViewById(R.id.createEventButton).setOnClickListener(view -> ActivityUtils.changeActivity(this, CreateEventActivity.class));

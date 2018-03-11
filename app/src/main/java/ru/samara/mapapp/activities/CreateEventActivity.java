@@ -14,7 +14,6 @@ import com.google.android.gms.maps.model.LatLng;
 import java.util.ArrayList;
 
 import ru.samara.mapapp.R;
-import ru.samara.mapapp.events.Event;
 import ru.samara.mapapp.events.EventType;
 
 
@@ -71,6 +70,6 @@ public class CreateEventActivity extends AppCompatActivity {
         String longDescription = ((EditText) findViewById(R.id.newEventLongDescription)).getText().toString();
         Integer type = typeSelected;
         int cost = Integer.parseInt(((EditText) findViewById(R.id.newEventLongDescription)).getText().toString());
-        Event event = new Event(1, type, null, name, shortDescription, longDescription, null, cost);
+      //  Event event = new Event(1, type, null, name, shortDescription, longDescription, null, cost);
     }
 }

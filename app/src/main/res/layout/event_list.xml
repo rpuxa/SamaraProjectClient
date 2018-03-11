@@ -110,14 +110,10 @@
         android:textColor="@color/common_google_signin_btn_text_dark_focused"
         android:textSize="18sp" />
 
-    <ScrollView
+    <ListView
+        android:id="@+id/mainEventList"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:scrollbars="horizontal|vertical" />
 
-        <LinearLayout
-            android:id="@+id/mainList"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical" />
-    </ScrollView>
 </LinearLayout>
