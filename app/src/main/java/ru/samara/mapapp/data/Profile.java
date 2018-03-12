@@ -3,6 +3,7 @@ package ru.samara.mapapp.data;
 import android.graphics.Bitmap;
 
 public class Profile {
+    int id;
     String name, lastName;
     Bitmap avatar;
 
@@ -21,5 +22,9 @@ public class Profile {
 
     public String getFullName() {
         return name + " " + lastName;
+    }
+
+    public int getId() {
+        return id;
     }
 }

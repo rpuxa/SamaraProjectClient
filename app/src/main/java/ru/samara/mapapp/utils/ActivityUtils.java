@@ -1,4 +1,4 @@
-package ru.samara.mapapp;
+package ru.samara.mapapp.utils;
 
 import android.app.Activity;
 import android.content.Intent;

@@ -1,59 +1,89 @@
 package ru.samara.mapapp.activities;
 
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.CheckBox;
+import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.ListView;
-import android.widget.Spinner;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.google.android.gms.maps.model.LatLng;
-
-import java.util.ArrayList;
-import java.util.GregorianCalendar;
-
-import ru.samara.mapapp.ActivityUtils;
 import ru.samara.mapapp.R;
+import ru.samara.mapapp.activities.contents.CreateEventContent;
+import ru.samara.mapapp.activities.contents.EventSearchContent;
 import ru.samara.mapapp.data.MyProfile;
-import ru.samara.mapapp.events.EventSearchFilter;
-import ru.samara.mapapp.events.EventType;
-import ru.samara.mapapp.events.EventsList;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity
+        implements NavigationView.OnNavigationItemSelectedListener {
 
     public static final String ACTION = "action";
     public static final String LOG_IN = "login";
 
     public static final String NAME_LAST_NAME = "namelastname";
     public static final String AVATAR = "avtr";
+    public static final String TOKEN = "token";
+    public static final String MAIN_ID = "mainid";
 
-    EventsList list = new EventsList(this);
-    MyProfile myProfile = new MyProfile();
+    private Content activeContent;
+
+
+
+    public MyProfile myProfile = new MyProfile();
+    Toolbar toolbar;
+    DrawerLayout drawer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_activity);
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close
+        );
+        drawer.setDrawerListener(toggle);
+        drawer.closeDrawers();
+        toggle.syncState();
         handleBundle(getIntent().getExtras());
-        setEventTypeSpinner();
-        setListeners();
-        list.setMainEventList((ListView) findViewById(R.id.mainEventList));
-        for (int i = 0; i < 10; i++)
-            list.addEvent(123,
-                    0,
-                    new LatLng(53, 54),
-                    "Name", "description",
-                    "",
-                    new GregorianCalendar(2018, 3, 18, 9, 0),
-                    0
-            );
+        ((NavigationView) findViewById(R.id.navigation)).setNavigationItemSelectedListener(this);
+
+    }
+
+    public void startContent(Class<? extends Content> clazz){
+        startContent(new Intent(), clazz);
+    }
+
+    public void startContent(Intent intent, Class<? extends Content> clazz) {
+        Content content = null;
+        try {
+            content = clazz.newInstance();
+        } catch (InstantiationException | IllegalAccessException ignored) {
+        }
+        assert content != null;
+        activeContent = content;
+        content.setLayout(content.layout());
+        content.setParent(this);
+        LinearLayout layout = (LinearLayout) findViewById(R.id.contentView);
+        layout.removeAllViews();
+        ViewGroup mainGroup = (ViewGroup) getLayoutInflater().inflate(content.getLayout(), layout, false);
+        layout.addView(mainGroup);
+        content.setMainGroup(mainGroup);
+        content.onCreate(this, intent);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        activeContent.onActivityResult(requestCode, resultCode, data);
     }
 
     private void handleBundle(Bundle bundle) {
@@ -73,56 +103,31 @@ public class MainActivity extends AppCompatActivity {
                 nameAndLastName[0],
                 nameAndLastName[1],
                 (Bitmap) bundle.get(AVATAR),
-                ""
+                bundle.getString(TOKEN),
+                bundle.getInt(MAIN_ID)
         );
         View header = ((NavigationView) findViewById(R.id.navigation)).getHeaderView(0);
-
         ((ImageView) header.findViewById(R.id.headerIcon)).setImageBitmap(myProfile.getAvatar());
         ((TextView) header.findViewById(R.id.headerName)).setText(myProfile.getFullName());
-    }
-
-    private void setEventTypeSpinner() {
-        Spinner spinner = (Spinner) findViewById(R.id.eventTypeSpinner);
-        ArrayList<String> typesNames = new ArrayList<>(EventType.types.size());
-        typesNames.add("Любой");
-        for (EventType type : EventType.types.values())
-            typesNames.add(type.getName());
-        spinner.setAdapter(new ArrayAdapter<>(this, R.layout.support_simple_spinner_dropdown_item, typesNames));
-        final int[] type = {-1};
-        EventSearchFilter filter = event -> type[0] == -1 || type[0] == event.getTypeId();
-        list.addFilter(filter);
-        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                if (i == 0) {
-                    type[0] = -1;
-                    return;
-                }
-                type[0] = EventType.getByName(typesNames.get(i)).getId();
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {
-            }
-        });
-    }
-
-    private void setListeners() {
-        findViewById(R.id.settings).setOnClickListener(v -> ActivityUtils.changeVisible(findViewById(R.id.settingsLayout)));
-        findViewById(R.id.search).setOnClickListener(v -> list.notifyDataSetChanged());
-        final CheckBox checkBox = (CheckBox) findViewById(R.id.isPaid);
-        list.addFilter(event -> checkBox.isChecked() == event.isPaid());
-        //findViewById(R.id.headerLayout).setOnClickListener();
+        startContent(EventSearchContent.class);
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
             case R.id.menuCreateNewEvent:
-                ActivityUtils.changeActivity(this, CreateEventActivity.class);
+                startContent(CreateEventContent.class);
+                break;
+            case R.id.menuFoundEvents:
+                startContent(EventSearchContent.class);
                 break;
         }
-        return super.onOptionsItemSelected(item);
+        drawer.closeDrawers();
+        return true;
+    }
+
+    public Toolbar getToolbar() {
+        return toolbar;
     }
 }
 

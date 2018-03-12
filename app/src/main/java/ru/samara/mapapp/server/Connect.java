@@ -8,10 +8,14 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.concurrent.ExecutionException;
 
-public class Connect extends AsyncTask<String, Void, JSONObject> {
+public final class Connect extends AsyncTask<String, Void, JSONObject> {
 
     private static final String ADDRESS = "http://54.38.186.12/";
+
+    private Connect() {
+    }
 
     @Override
     protected JSONObject doInBackground(String... strings) {
@@ -50,5 +54,13 @@ public class Connect extends AsyncTask<String, Void, JSONObject> {
             e.printStackTrace();
         }
         return object;
+    }
+
+    public static JSONObject send(String... args) {
+        try {
+            return new Connect().execute(args).get();
+        } catch (InterruptedException | ExecutionException ignored) {
+        }
+        throw new RuntimeException("Fail!");
     }
 }
