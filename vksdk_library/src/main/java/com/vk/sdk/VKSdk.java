@@ -75,7 +75,7 @@ public class VKSdk {
     /**
      * App id for current application
      */
-    private static int sCurrentAppId = 0;
+    private static int sCurrentAppId = 6404244;
 
     private final Context applicationContext;
 
@@ -189,7 +189,6 @@ public class VKSdk {
     private synchronized static VKSdk initialize(Context applicationContext, int appId, String appVer) {
         if (sCurrentAppId == 0) {
             vkSdk = new VKSdk(applicationContext);
-            sCurrentAppId = appId;
             sCurrentApiVersion = TextUtils.isEmpty(appVer) ? VKSdkVersion.DEFAULT_API_VERSION : appVer;
             sCurrentLoginState = LoginState.Unknown;
             wakeUpSession(applicationContext);
