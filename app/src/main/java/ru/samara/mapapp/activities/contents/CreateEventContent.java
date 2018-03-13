@@ -42,6 +42,7 @@ public class CreateEventContent extends Content {
         if (requestCode == MapActivity.REQUEST_CODE_MAP_CHOSE_LOCATION && resultCode == RESULT_OK) {
             findViewById(R.id.newEventShowLocation).setEnabled(true);
             locationSelected = (LatLng) data.getExtras().get(MapActivity.MAP_CHOSE_LOCATION);
+
         }
     }
 

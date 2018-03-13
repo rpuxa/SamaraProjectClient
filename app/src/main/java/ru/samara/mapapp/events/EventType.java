@@ -7,6 +7,7 @@ import java.util.Map;
 
 import ru.samara.mapapp.R;
 
+import static ru.samara.mapapp.events.EventType.Types.CINEMA;
 import static ru.samara.mapapp.events.EventType.Types.MUSEUM;
 import static ru.samara.mapapp.events.EventType.Types.SPORT;
 
@@ -27,14 +28,15 @@ public class EventType {
     static {
         EventType array[] = {
                 new EventType(SPORT, "Спорт", R.drawable.sport),
-                new EventType(MUSEUM, "Музей", R.drawable.sport)
+                new EventType(MUSEUM, "Музей", R.drawable.musem),
+                new EventType(CINEMA, "Кино", R.drawable.cinema)
         };
         for (EventType type : array)
             types.put(type.id, type);
     }
 
 
-    public static EventType getType(int id) {
+    public static EventType getById(int id) {
         return types.get(id);
     }
 
@@ -63,6 +65,7 @@ public class EventType {
     public interface Types {
         int SPORT = 0;
         int MUSEUM = 1;
+        int CINEMA = 2;
     }
 }
 

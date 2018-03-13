@@ -32,6 +32,7 @@ public class LoginActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         VKSdk.login(this, VKScope.OFFLINE);
+        startActivity(new Intent(this, MainActivity.class));
     }
 
     @Override

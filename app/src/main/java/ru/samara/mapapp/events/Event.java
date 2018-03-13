@@ -8,13 +8,14 @@ import android.widget.TextView;
 
 import com.google.android.gms.maps.model.LatLng;
 
+import java.io.Serializable;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
 import ru.samara.mapapp.R;
 import ru.samara.mapapp.activities.MapActivity;
 
-public class Event {
+public class Event implements Serializable {
     private int id;
     private Integer typeId;
     private EventType type;
@@ -35,7 +36,7 @@ public class Event {
         this.date = date;
         this.cost = cost;
         this.longDescription = longDescription;
-        type = EventType.getType(typeId);
+        type = EventType.getById(typeId);
         view = makeView(parent, activity);
     }
 
@@ -63,5 +64,65 @@ public class Event {
 
     public boolean isPaid() {
         return cost > 0;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public void setTypeId(Integer typeId) {
+        this.typeId = typeId;
+    }
+
+    public LatLng getLocation() {
+        return location;
+    }
+
+    public void setLocation(LatLng location) {
+        this.location = location;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getShortDescription() {
+        return shortDescription;
+    }
+
+    public void setShortDescription(String shortDescription) {
+        this.shortDescription = shortDescription;
+    }
+
+    public String getLongDescription() {
+        return longDescription;
+    }
+
+    public void setLongDescription(String longDescription) {
+        this.longDescription = longDescription;
+    }
+
+    public GregorianCalendar getDate() {
+        return date;
+    }
+
+    public void setDate(GregorianCalendar date) {
+        this.date = date;
+    }
+
+    public int getCost() {
+        return cost;
+    }
+
+    public void setCost(int cost) {
+        this.cost = cost;
     }
 }
