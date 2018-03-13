@@ -41,7 +41,7 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onResult(VKAccessToken res) {
                 Intent intent = new Intent(instant, MainActivity.class);
-                JSONObject object = Connect.send("auth_vk",
+                JSONObject object = Connect.sendToJSONObject("auth_vk",
                         "token", res.accessToken
                 );
                 try {

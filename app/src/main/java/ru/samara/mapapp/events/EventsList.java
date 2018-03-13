@@ -73,4 +73,8 @@ public class EventsList extends BaseAdapter {
     public View getView(int i, View view, ViewGroup viewGroup) {
         return filteredEvents[i].getView();
     }
+
+    public void removeAllEvents() {
+        events.clear();
+    }
 }

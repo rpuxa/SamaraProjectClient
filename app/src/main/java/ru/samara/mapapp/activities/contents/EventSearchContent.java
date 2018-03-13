@@ -10,16 +10,22 @@ import android.widget.Spinner;
 
 import com.google.android.gms.maps.model.LatLng;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.GregorianCalendar;
 
-import ru.samara.mapapp.utils.ActivityUtils;
 import ru.samara.mapapp.R;
 import ru.samara.mapapp.activities.Content;
 import ru.samara.mapapp.activities.MainActivity;
 import ru.samara.mapapp.events.EventSearchFilter;
 import ru.samara.mapapp.events.EventType;
 import ru.samara.mapapp.events.EventsList;
+import ru.samara.mapapp.server.Connect;
+import ru.samara.mapapp.utils.ActivityUtils;
 
 
 public class EventSearchContent extends Content {
@@ -33,15 +39,7 @@ public class EventSearchContent extends Content {
         setEventTypeSpinner();
         setListeners();
         list.setMainEventList((ListView) findViewById(R.id.mainEventList));
-        for (int i = 0; i < 10; i++)
-            list.addEvent(123,
-                    0,
-                    new LatLng(53, 54),
-                    "Name", "description",
-                    "",
-                    new GregorianCalendar(2018, 3, 18, 9, 0),
-                    0
-            );
+        getEvents();
     }
 
     @Override
@@ -82,6 +80,34 @@ public class EventSearchContent extends Content {
         list.addFilter(event -> checkBox.isChecked() == event.isPaid());
 
         //findViewById(R.id.headerLayout).setOnClickListener();
+    }
+
+    private void getEvents() {
+        try {
+            list.removeAllEvents();
+            JSONArray array = (JSONArray) Connect.sendToJSONObject("showallevents").get("events");
+            for (int i = 0; i < array.length(); i++) {
+                JSONObject object = array.getJSONObject(i);
+                GregorianCalendar calendar = new GregorianCalendar();
+                calendar.setTime(new Date(1000 * object.getLong("time")));
+                list.addEvent(
+                        object.getInt("id"),
+                        object.getInt("type"),
+                        new LatLng(
+                                object.getDouble("latitude"),
+                                object.getDouble("longitude")
+                        ),
+                        object.getString("name"),
+                        object.getString("s_description"),
+                        object.getString("l_description"),
+                        calendar,
+                        object.getInt("cost")
+                );
+            }
+            list.notifyDataSetChanged();
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 
 }

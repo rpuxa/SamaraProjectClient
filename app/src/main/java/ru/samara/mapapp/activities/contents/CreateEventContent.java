@@ -9,8 +9,6 @@ import android.widget.Spinner;
 
 import com.google.android.gms.maps.model.LatLng;
 
-import org.json.JSONObject;
-
 import java.util.ArrayList;
 
 import ru.samara.mapapp.R;
@@ -78,19 +76,20 @@ public class CreateEventContent extends Content {
         String longDescription = ((EditText) findViewById(R.id.newEventLongDescription)).getText().toString();
         Integer type = typeSelected;
         int cost = Integer.parseInt(((EditText) findViewById(R.id.newEventCost)).getText().toString());
-        JSONObject answer = Connect.send("addevent",
+        Connect.send("addevent",
                 "main_id", String.valueOf(getParent().myProfile.getId()),
                 "token", getParent().myProfile.getToken(),
                 "request", "{" +
                         "\"name\":\"" + name + "\"," +
-                        "\"time\":" + 1520899999 + "," +
+                        "\"time\":" + 1920899999 + "," +
                         "\"longitude\":\"" + ((float) locationSelected.longitude) + "\"," +
                         "\"latitude\":\"" + ((float) locationSelected.latitude) + "\"," +
-                        "\"ShortDescription\":\"" + shortDescription + "\"," +
+                        "\"s_description\":\"" + shortDescription + "\"," +
                         "\"l_description\":\"" + longDescription + "\"," +
-                        "\"cost\":" + cost + "}"
+                        "\"cost\":" + cost + "," +
+                        "\"type\":" + type +
+                        "}"
         );
-        System.out.println();
     }
 
 
