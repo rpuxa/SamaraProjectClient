@@ -41,7 +41,7 @@ public class MainActivity extends AppCompatActivity
 
     private Content activeContent;
 
-
+    Toast toast;
 
     public MyProfile myProfile = new MyProfile();
     Toolbar toolbar;
@@ -62,10 +62,10 @@ public class MainActivity extends AppCompatActivity
         toggle.syncState();
         handleBundle(getIntent().getExtras());
         ((NavigationView) findViewById(R.id.navigation)).setNavigationItemSelectedListener(this);
-
+        toast = new Toast(this);
     }
 
-    public void startContent(Class<? extends Content> clazz){
+    public void startContent(Class<? extends Content> clazz) {
         startContent(new Intent(), clazz);
     }
 
@@ -73,7 +73,8 @@ public class MainActivity extends AppCompatActivity
         Content content = null;
         try {
             content = clazz.newInstance();
-        } catch (InstantiationException | IllegalAccessException ignored) {
+        } catch (InstantiationException ignored) {
+        } catch (IllegalAccessException ignored) {
         }
         assert content != null;
         activeContent = content;
@@ -107,7 +108,7 @@ public class MainActivity extends AppCompatActivity
 
     private void logIn(Bundle bundle) {
         String[] nameAndLastName = (String[]) bundle.get(NAME_LAST_NAME);
-        assert  nameAndLastName != null;
+        assert nameAndLastName != null;
         myProfile = new MyProfile(
                 nameAndLastName[0],
                 nameAndLastName[1],
@@ -143,7 +144,6 @@ public class MainActivity extends AppCompatActivity
         return true;
     }
 
-    Toast toast = new Toast(this);
 
     public void sendToast(String massage, boolean isShort) {
         toast.cancel();

@@ -16,12 +16,10 @@ import ru.samara.mapapp.R;
 
 public class ChatListAdapter extends BaseAdapter {
 
-    Context context;
-    LayoutInflater inflater;
-    List<Comment> chatList;
+    private LayoutInflater inflater;
+    private List<Comment> chatList;
 
     public ChatListAdapter(Context context) {
-        this.context = context;
         inflater = (LayoutInflater) context
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         chatList = new ArrayList<>();

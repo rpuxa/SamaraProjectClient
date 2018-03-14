@@ -9,6 +9,8 @@ import ru.samara.mapapp.R;
 
 import static ru.samara.mapapp.events.EventType.Types.CINEMA;
 import static ru.samara.mapapp.events.EventType.Types.MUSEUM;
+import static ru.samara.mapapp.events.EventType.Types.OTHER;
+import static ru.samara.mapapp.events.EventType.Types.SALES;
 import static ru.samara.mapapp.events.EventType.Types.SPORT;
 
 public class EventType {
@@ -29,6 +31,8 @@ public class EventType {
         EventType array[] = {
                 new EventType(SPORT, "Спорт", R.drawable.sport),
                 new EventType(MUSEUM, "Музей", R.drawable.musem),
+                new EventType(OTHER, "Прочее", R.drawable.other),
+                new EventType(SALES, "Скидки", R.drawable.sales),
                 new EventType(CINEMA, "Кино", R.drawable.cinema)
         };
         for (EventType type : array)
@@ -66,6 +70,8 @@ public class EventType {
         int SPORT = 0;
         int MUSEUM = 1;
         int CINEMA = 2;
+        int SALES = 3;
+        int OTHER = 4;
     }
 }
 

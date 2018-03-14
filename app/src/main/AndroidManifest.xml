@@ -26,7 +26,11 @@
             </intent-filter>
         </activity>
 
-        <activity android:name="com.vk.sdk.VKServiceActivity" android:label="ServiceActivity" android:theme="@style/VK.Transparent" />
+        <activity
+            android:name="com.vk.sdk.VKServiceActivity"
+            android:label="ServiceActivity"
+            android:theme="@style/VK.Transparent"
+            />
 
         <activity android:name="ru.samara.mapapp.activities.MapActivity" />
         <activity android:name="ru.samara.mapapp.activities.MainActivity" />

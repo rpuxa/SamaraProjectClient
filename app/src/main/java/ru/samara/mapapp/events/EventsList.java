@@ -1,24 +1,30 @@
 package ru.samara.mapapp.events;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.ListView;
 
 import com.google.android.gms.maps.model.LatLng;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.GregorianCalendar;
+
+import ru.samara.mapapp.activities.MainActivity;
+import ru.samara.mapapp.activities.contents.EventLayoutContent;
 
 public class EventsList extends BaseAdapter {
     private ArrayList<Event> events;
     private Event[] filteredEvents;
     private ArrayList<EventSearchFilter> filters;
-    private Activity activity;
+    private MainActivity activity;
     private ListView mainEventList;
 
-    public EventsList(Activity activity) {
+    public EventsList(MainActivity activity) {
         events = new ArrayList<>();
         filters = new ArrayList<>();
         this.activity = activity;

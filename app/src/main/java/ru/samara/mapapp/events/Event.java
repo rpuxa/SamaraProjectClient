@@ -1,6 +1,7 @@
 package ru.samara.mapapp.events;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -13,7 +14,9 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 
 import ru.samara.mapapp.R;
+import ru.samara.mapapp.activities.MainActivity;
 import ru.samara.mapapp.activities.MapActivity;
+import ru.samara.mapapp.activities.contents.EventLayoutContent;
 
 public class Event implements Serializable {
     private int id;
@@ -27,7 +30,7 @@ public class Event implements Serializable {
     private View view;
 
     public Event(int id, Integer typeId, LatLng location, String name, String shortDescription, String longDescription,
-                 GregorianCalendar date, int cost, ViewGroup parent, Activity activity) {
+                 GregorianCalendar date, int cost, ViewGroup parent, MainActivity activity) {
         this.id = id;
         this.typeId = typeId;
         this.location = location;
@@ -40,18 +43,27 @@ public class Event implements Serializable {
         view = makeView(parent, activity);
     }
 
-    private View makeView(ViewGroup parent, Activity activity) {
+    private View makeView(ViewGroup parent, MainActivity activity) {
         View view = activity.getLayoutInflater().inflate(R.layout.event_example, parent, false);
         ((ImageView) view.findViewById(R.id.eventIcon)).setImageResource(type.getIcon());
         ((TextView) view.findViewById(R.id.eventName)).setText(name);
-        String dateSt = "Дата проведения: " + this.date.get(Calendar.HOUR) + ":" + ((this.date.get(Calendar.MINUTE) < 10) ? "0" : "")
-                + this.date.get(Calendar.MINUTE) + " " + this.date.get(Calendar.DAY_OF_MONTH) + "." + this.date.get(Calendar.MONTH) + "." +
-                this.date.get(Calendar.YEAR);
+        String dateSt = "Дата проведения: " + getStringDate();
         ((TextView) view.findViewById(R.id.eventDate)).setText(dateSt);
         ((TextView) view.findViewById(R.id.eventShortDescription)).setText(shortDescription);
         view.findViewById(R.id.eventOpenMap).setOnClickListener(v -> MapActivity.gotoLocation(activity, location));
+        view.findViewById(R.id.event_touch_layout).setOnClickListener(v -> {
+            Intent intent = new Intent();
+            intent.putExtra(EventLayoutContent.EVENT, this);
+            activity.startContent(intent, EventLayoutContent.class);
+        });
 
         return view;
+    }
+
+    public String getStringDate() {
+        return this.date.get(Calendar.HOUR) + ":" + ((this.date.get(Calendar.MINUTE) < 10) ? "0" : "")
+                + this.date.get(Calendar.MINUTE) + " " + this.date.get(Calendar.DAY_OF_MONTH) + "." + this.date.get(Calendar.MONTH) + "." +
+                this.date.get(Calendar.YEAR);
     }
 
     public View getView() {

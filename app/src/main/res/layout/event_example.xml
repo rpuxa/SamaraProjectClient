@@ -3,14 +3,17 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
+    android:weightSum="2"
     tools:context="ru.samara.mapapp.activities.MainActivity">
 
 
     <LinearLayout
-        android:layout_width="match_parent"
+        android:id="@+id/event_touch_layout"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_weight="0"
+        android:layout_marginEnd="16dp"
+        android:layout_weight="1"
         android:orientation="horizontal"
         tools:layout_editor_absoluteX="10dp"
         tools:layout_editor_absoluteY="9dp">
@@ -19,11 +22,12 @@
             android:id="@+id/eventIcon"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
+            android:layout_marginRight="16dp"
             android:layout_weight="0"
             app:srcCompat="@drawable/sport" />
 
         <LinearLayout
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:orientation="vertical">
@@ -36,46 +40,29 @@
                 android:textColor="@color/common_google_signin_btn_text_dark_focused"
                 android:textSize="24sp" />
 
-            <LinearLayout
+            <TextView
+                android:id="@+id/eventDate"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:orientation="horizontal">
+                android:text="date" />
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:id="@+id/eventDate"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="date" />
-
-                    <TextView
-                        android:id="@+id/eventShortDescription"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="description asdasdasdasdasdasdddddddddddddddddddddddddddddddddddddddasd" />
-
-                </LinearLayout>
-
-            </LinearLayout>
+            <TextView
+                android:id="@+id/eventShortDescription"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="description asdasdasdasdasdasdddddddddddddddddddddddddddddddddddddddasd" />
 
         </LinearLayout>
 
-        <ImageButton
-            android:id="@+id/eventOpenMap"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_weight="0"
-            app:srcCompat="@drawable/google_maps_icon" />
-
     </LinearLayout>
+
+    <ImageView
+        android:id="@+id/eventOpenMap"
+        android:layout_width="100dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        app:srcCompat="@drawable/google_maps_icon" />
 
 </LinearLayout>

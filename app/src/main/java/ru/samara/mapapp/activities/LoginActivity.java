@@ -11,6 +11,7 @@ import com.vk.sdk.VKCallback;
 import com.vk.sdk.VKScope;
 import com.vk.sdk.VKSdk;
 import com.vk.sdk.api.VKError;
+import com.vk.sdk.util.VKUtil;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -32,7 +33,6 @@ public class LoginActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         VKSdk.login(this, VKScope.OFFLINE);
-        startActivity(new Intent(this, MainActivity.class));
     }
 
     @Override
