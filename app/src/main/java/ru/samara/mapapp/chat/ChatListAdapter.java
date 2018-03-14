@@ -18,7 +18,7 @@ public class ChatListAdapter extends BaseAdapter {
 
     Context context;
     LayoutInflater inflater;
-    List<Coment> chatList;
+    List<Comment> chatList;
 
     public ChatListAdapter(Context context) {
         this.context = context;
@@ -27,12 +27,12 @@ public class ChatListAdapter extends BaseAdapter {
         chatList = new ArrayList<>();
     }
 
-    public void setChatList(List<Coment> chatList) {
+    public void setChatList(List<Comment> chatList) {
         this.chatList = chatList;
     }
 
-    public void addComent(Coment coment) {
-        chatList.add(coment);
+    public void addComment(Comment comment) {
+        chatList.add(comment);
         notifyDataSetChanged();
     }
 
@@ -46,8 +46,8 @@ public class ChatListAdapter extends BaseAdapter {
         return chatList.get(position);
     }
 
-    public Coment getComent(int position) {
-        return (Coment) getItem(position);
+    public Comment getComment(int position) {
+        return (Comment) getItem(position);
     }
 
     @Override
@@ -61,9 +61,9 @@ public class ChatListAdapter extends BaseAdapter {
         if (view == null) {
             view = inflater.inflate(R.layout.item_coment, parent, false);
         }
-        Coment coment = getComent(position);
-        ((TextView) view.findViewById(R.id.tv_user_name)).setText(coment.getUserName());
-        ((TextView) view.findViewById(R.id.tv_chat_text)).setText(coment.getText());
+        Comment comment = getComment(position);
+        ((TextView) view.findViewById(R.id.tv_user_name)).setText(comment.getUserName());
+        ((TextView) view.findViewById(R.id.tv_chat_text)).setText(comment.getText());
         ((ImageView) view.findViewById(R.id.iv_avatar_user)).setImageResource(R.drawable.sport);
         return view;
     }

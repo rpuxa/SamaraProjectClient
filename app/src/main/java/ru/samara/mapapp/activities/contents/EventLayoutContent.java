@@ -1,42 +1,41 @@
 package ru.samara.mapapp.activities.contents;
 
-import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import ru.samara.mapapp.R;
 import ru.samara.mapapp.activities.Content;
 import ru.samara.mapapp.activities.MainActivity;
 import ru.samara.mapapp.chat.ChatListAdapter;
-import ru.samara.mapapp.chat.Coment;
+import ru.samara.mapapp.chat.Comment;
 import ru.samara.mapapp.events.Event;
 import ru.samara.mapapp.events.EventType;
 
 
 public class EventLayoutContent extends Content {
-    private EditText comentEdit;
-    Context context;
-    ChatListAdapter adapter;
-    ListView listView;
+    private EditText commentEdit;
+    private ChatListAdapter adapter;
     public static final String EVENT = "event";
 
     @Override
     public void onCreate(MainActivity parent, Intent intent) {
         setListeners();
-        comentEdit = (EditText) findViewById(R.id.et_coment);
-        context = parent.getApplicationContext();
-        adapter = new ChatListAdapter(context);
-        listView = (ListView) findViewById(R.id.chat_list);
+        commentEdit = (EditText) findViewById(R.id.et_coment);
+        adapter = new ChatListAdapter(getParent());
+        ListView listView = (ListView) findViewById(R.id.chat_list);
         listView.setAdapter(adapter);
-        setLayoutEvent((Event) intent.getExtras().getSerializable(EVENT));
+        Bundle bundle = intent.getExtras();
+        assert bundle != null;
+        setLayoutEvent((Event) bundle.get(EVENT));
     }
 
-    void setLayoutEvent(Event event) {
-        if (event == null) return;
+    private void setLayoutEvent(Event event) {
+        if (event == null)
+            return;
         int type = event.getTypeId();
         EventType t = EventType.getById(type);
         ((ImageView) findViewById(R.id.icon_event)).setImageResource(t.getIcon());
@@ -46,21 +45,21 @@ public class EventLayoutContent extends Content {
         ((TextView) findViewById(R.id.tv_full_description)).setText(event.getLongDescription());
     }
 
-    void setListeners() {
+    private void setListeners() {
         findViewById(R.id.button_send_coment).setOnClickListener(v -> {
-            String comentStr = comentEdit.getText().toString();
-            if (comentStr.length() > 0) {
-                addComent(new Coment(0, "Name", comentStr));
-                comentEdit.setText("");
+            String commentString = commentEdit.getText().toString();
+            if (commentString.length() > 0) {
+                addComment(new Comment(0, "Name", commentString));
+                commentEdit.setText("");
             } else {
-                Toast.makeText(context, "СНачала введите потом кликайте!", Toast.LENGTH_SHORT).show();
+                getParent().sendToast("Сначала введите потом кликайте!", true);
             }
         });
     }
 
 
-    void addComent(Coment coment) {
-        adapter.addComent(coment);
+    private void addComment(Comment comment) {
+        adapter.addComment(comment);
         adapter.notifyDataSetChanged();
     }
 

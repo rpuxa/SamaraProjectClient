@@ -15,6 +15,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.maps.model.LatLng;
 
@@ -133,13 +134,21 @@ public class MainActivity extends AppCompatActivity
                 Intent intent = new Intent();
                 intent.putExtra(EventLayoutContent.EVENT, new Event(
                         123, 1, new LatLng(56, 40), "dasd", "asdasdasd", "asdasdawdawfafjefbjefbefsebfhesjfvsefsejfsef",
-                        new GregorianCalendar(1765, 1, 1), 0, (ViewGroup) findViewById(R.id.mainEventList), this
+                        new GregorianCalendar(1765, 1, 1), 0, findViewById(R.id.mainEventList), this
                 ));
                 startContent(intent, EventLayoutContent.class);
                 break;
         }
         drawer.closeDrawers();
         return true;
+    }
+
+    Toast toast = new Toast(this);
+
+    public void sendToast(String massage, boolean isShort) {
+        toast.cancel();
+        toast = Toast.makeText(this, massage, (isShort) ? Toast.LENGTH_SHORT : Toast.LENGTH_LONG);
+        toast.show();
     }
 
     public Toolbar getToolbar() {
