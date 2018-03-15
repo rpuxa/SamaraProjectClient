@@ -13,11 +13,6 @@
                 android:icon="@android:drawable/ic_input_add"
                 android:title="Создать новое" />
 
-        <item
-
-            android:id="@+id/openEvent"
-            android:icon="@android:drawable/ic_input_add"
-            android:title="Создать новое" />
     </item>
 
 </menu>

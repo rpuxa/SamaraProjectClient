@@ -6,6 +6,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.TextView;
 
 import com.google.android.gms.maps.model.LatLng;
 
@@ -15,8 +16,11 @@ import ru.samara.mapapp.R;
 import ru.samara.mapapp.activities.Content;
 import ru.samara.mapapp.activities.MainActivity;
 import ru.samara.mapapp.activities.MapActivity;
+import ru.samara.mapapp.dialogs.DateTimePickerDialog;
+import ru.samara.mapapp.dialogs.DateTimePickerDialogListener;
 import ru.samara.mapapp.events.EventType;
 import ru.samara.mapapp.server.Connect;
+import ru.samara.mapapp.utils.DateUtils;
 
 import static android.app.Activity.RESULT_OK;
 
@@ -24,6 +28,7 @@ public class CreateEventContent extends Content {
 
     private Integer typeSelected = null;
     private LatLng locationSelected = null;
+    private Long timeSelected = null;
 
     @Override
     public void onCreate(MainActivity parent, Intent intent) {
@@ -42,7 +47,6 @@ public class CreateEventContent extends Content {
         if (requestCode == MapActivity.REQUEST_CODE_MAP_CHOSE_LOCATION && resultCode == RESULT_OK) {
             findViewById(R.id.newEventShowLocation).setEnabled(true);
             locationSelected = (LatLng) data.getExtras().get(MapActivity.MAP_CHOSE_LOCATION);
-
         }
     }
 
@@ -69,6 +73,13 @@ public class CreateEventContent extends Content {
         findViewById(R.id.createButton).setOnClickListener(v -> createEvent());
         findViewById(R.id.newEventShowLocation).setOnClickListener(v -> MapActivity.gotoLocation(getParent(), locationSelected));
         findViewById(R.id.newEventChoseLocation).setOnClickListener(v -> MapActivity.getLocation(getParent()));
+        TextView dateTextView = (TextView) findViewById(R.id.newEventDateTextView);
+        DateTimePickerDialogListener dateTimePickerDialogListener = timeUNIX -> {
+            timeSelected = timeUNIX;
+            String dateString = "Дата: " + DateUtils.dateToString(timeUNIX);
+            dateTextView.setText(dateString);
+        };
+        findViewById(R.id.newEventDateButton).setOnClickListener(v -> new DateTimePickerDialog(getParent(), dateTimePickerDialogListener).show());
     }
 
     private void createEvent() {
@@ -82,7 +93,7 @@ public class CreateEventContent extends Content {
                 "token", getParent().myProfile.getToken(),
                 "request", "{" +
                         "\"name\":\"" + name + "\"," +
-                        "\"time\":" + 1920899999 + "," +
+                        "\"time\":" + timeSelected + "," +
                         "\"longitude\":\"" + ((float) locationSelected.longitude) + "\"," +
                         "\"latitude\":\"" + ((float) locationSelected.latitude) + "\"," +
                         "\"s_description\":\"" + shortDescription + "\"," +

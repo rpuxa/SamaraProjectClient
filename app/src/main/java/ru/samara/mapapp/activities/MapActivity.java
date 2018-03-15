@@ -39,8 +39,8 @@ public class MapActivity extends AppCompatActivity {
             map = googleMap;
             int action = (int) getIntent().getExtras().get(ACTION);
             Object value = getIntent().getExtras().get(VALUE);
-            LinearLayout buttonLayout = (LinearLayout) findViewById(R.id.mapButtonsLayout);
-            Button accept = (Button) findViewById(R.id.mapAccept);
+            LinearLayout buttonLayout = findViewById(R.id.mapButtonsLayout);
+            Button accept = findViewById(R.id.mapAccept);
             if (action == GOTO_LOCATION) {
                 buttonLayout.setVisibility(View.GONE);
                 LatLng location = (LatLng) value;

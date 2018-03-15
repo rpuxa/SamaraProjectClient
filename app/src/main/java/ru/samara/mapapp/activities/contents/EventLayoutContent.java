@@ -1,9 +1,7 @@
 package ru.samara.mapapp.activities.contents;
 
-import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -17,6 +15,7 @@ import ru.samara.mapapp.chat.ChatListAdapter;
 import ru.samara.mapapp.chat.Comment;
 import ru.samara.mapapp.events.Event;
 import ru.samara.mapapp.events.EventType;
+import ru.samara.mapapp.server.Connect;
 
 
 public class EventLayoutContent extends Content {
@@ -26,7 +25,7 @@ public class EventLayoutContent extends Content {
 
     @Override
     public void onCreate(MainActivity parent, Intent intent) {
-
+        getParent().getToolbar().setSubtitle("Инфо о мероприятии");
         commentEdit = (EditText) findViewById(R.id.et_coment);
         adapter = new ChatListAdapter(getParent());
         ListView listView = (ListView) findViewById(R.id.chat_list);
@@ -36,9 +35,13 @@ public class EventLayoutContent extends Content {
         Event event = (Event) bundle.get(EVENT);
         setLayoutEvent(event);
         setListeners(event);
+        updateComments(0, 100);
     }
 
-    @SuppressLint("SetTextI18n")
+    private void updateComments(int from, int to) {
+
+    }
+
     private void setLayoutEvent(Event event) {
         if (event == null)
             return;
@@ -46,16 +49,19 @@ public class EventLayoutContent extends Content {
         EventType t = EventType.getById(type);
         ((ImageView) findViewById(R.id.icon_event)).setImageResource(t.getIcon());
         ((TextView) findViewById(R.id.name_event)).setText(event.getName());
-        ((TextView) findViewById(R.id.tv_data_event)).setText("Дата: " + event.getStringDate());
+        String dateString = "Дата: " + event.getStringDate();
+        ((TextView) findViewById(R.id.tv_data_event)).setText(dateString);
         ((TextView) findViewById(R.id.tv_short_description)).setText(event.getShortDescription());
         ((TextView) findViewById(R.id.tv_full_description)).setText(event.getLongDescription());
     }
 
-    private void setListeners(Event event) {
+    private void setListeners(final Event event) {
         findViewById(R.id.button_send_coment).setOnClickListener(v -> {
             String commentString = commentEdit.getText().toString();
             if (commentString.length() > 0) {
-                addComment(new Comment(0, "Name", commentString));
+                Comment comment = new Comment(0, "Name", commentString);
+                sendCommentToServer(comment, event);
+                addComment(comment);
                 commentEdit.setText("");
             } else {
                 getParent().sendToast("Сначала введите потом кликайте!", true);
@@ -70,6 +76,15 @@ public class EventLayoutContent extends Content {
     private void addComment(Comment comment) {
         adapter.addComment(comment);
         adapter.notifyDataSetChanged();
+    }
+
+    private void sendCommentToServer(Comment comment, Event event) {
+        Connect.send("add_comment",
+                "main_id", String.valueOf(getParent().myProfile.getId()),
+                "event_id", String.valueOf(event.getId()),
+                "token", "\"" + getParent().myProfile.getToken() + "\"",
+                "text", "\"" + comment.getText() + "\""
+        );
     }
 
     @Override

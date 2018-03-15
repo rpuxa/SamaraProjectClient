@@ -1,6 +1,5 @@
 package ru.samara.mapapp.events;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,13 +9,13 @@ import android.widget.TextView;
 import com.google.android.gms.maps.model.LatLng;
 
 import java.io.Serializable;
-import java.util.Calendar;
 import java.util.GregorianCalendar;
 
 import ru.samara.mapapp.R;
 import ru.samara.mapapp.activities.MainActivity;
 import ru.samara.mapapp.activities.MapActivity;
 import ru.samara.mapapp.activities.contents.EventLayoutContent;
+import ru.samara.mapapp.utils.DateUtils;
 
 public class Event implements Serializable {
     private int id;
@@ -61,9 +60,7 @@ public class Event implements Serializable {
     }
 
     public String getStringDate() {
-        return this.date.get(Calendar.HOUR) + ":" + ((this.date.get(Calendar.MINUTE) < 10) ? "0" : "")
-                + this.date.get(Calendar.MINUTE) + " " + this.date.get(Calendar.DAY_OF_MONTH) + "." + this.date.get(Calendar.MONTH) + "." +
-                this.date.get(Calendar.YEAR);
+        return DateUtils.dateToString(date);
     }
 
     public View getView() {

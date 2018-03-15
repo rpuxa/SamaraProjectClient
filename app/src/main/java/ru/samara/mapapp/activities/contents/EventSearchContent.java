@@ -15,8 +15,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.GregorianCalendar;
 
 import ru.samara.mapapp.R;
 import ru.samara.mapapp.activities.Content;
@@ -26,6 +24,7 @@ import ru.samara.mapapp.events.EventType;
 import ru.samara.mapapp.events.EventsList;
 import ru.samara.mapapp.server.Connect;
 import ru.samara.mapapp.utils.ActivityUtils;
+import ru.samara.mapapp.utils.DateUtils;
 
 
 public class EventSearchContent extends Content {
@@ -78,8 +77,6 @@ public class EventSearchContent extends Content {
         findViewById(R.id.search).setOnClickListener(v -> list.notifyDataSetChanged());
         final CheckBox checkBox = (CheckBox) findViewById(R.id.isPaid);
         list.addFilter(event -> checkBox.isChecked() == event.isPaid());
-
-        //findViewById(R.id.headerLayout).setOnClickListener();
     }
 
     private void getEvents() {
@@ -88,8 +85,6 @@ public class EventSearchContent extends Content {
             JSONArray array = (JSONArray) Connect.sendToJSONObject("showallevents").get("events");
             for (int i = 0; i < array.length(); i++) {
                 JSONObject object = array.getJSONObject(i);
-                GregorianCalendar calendar = new GregorianCalendar();
-                calendar.setTime(new Date(1000 * object.getLong("time")));
                 list.addEvent(
                         object.getInt("id"),
                         object.getInt("type"),
@@ -100,7 +95,7 @@ public class EventSearchContent extends Content {
                         object.getString("name"),
                         object.getString("s_description"),
                         object.getString("l_description"),
-                        calendar,
+                        DateUtils.timeToCalendar(object.getLong("time")),
                         object.getInt("cost")
                 );
             }

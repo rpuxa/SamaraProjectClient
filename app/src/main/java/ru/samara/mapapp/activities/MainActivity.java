@@ -17,17 +17,10 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.gms.maps.model.LatLng;
-
-import java.util.GregorianCalendar;
-
 import ru.samara.mapapp.R;
 import ru.samara.mapapp.activities.contents.CreateEventContent;
-import ru.samara.mapapp.activities.contents.EventLayoutContent;
 import ru.samara.mapapp.activities.contents.EventSearchContent;
 import ru.samara.mapapp.data.MyProfile;
-import ru.samara.mapapp.dialogs.DateTimePickerDialog;
-import ru.samara.mapapp.events.Event;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -51,7 +44,6 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        new DateTimePickerDialog(this, timeUNIX -> System.out.println()).show();
         setContentView(R.layout.main_activity);
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -132,14 +124,6 @@ public class MainActivity extends AppCompatActivity
                 break;
             case R.id.menuFoundEvents:
                 startContent(EventSearchContent.class);
-                break;
-            case R.id.openEvent:
-                Intent intent = new Intent();
-                intent.putExtra(EventLayoutContent.EVENT, new Event(
-                        123, 1, new LatLng(56, 40), "dasd", "asdasdasd", "asdasdawdawfafjefbjefbefsebfhesjfvsefsejfsef",
-                        new GregorianCalendar(1765, 1, 1), 0, findViewById(R.id.mainEventList), this
-                ));
-                startContent(intent, EventLayoutContent.class);
                 break;
         }
         drawer.closeDrawers();
