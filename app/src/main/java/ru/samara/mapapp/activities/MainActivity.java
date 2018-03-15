@@ -26,6 +26,7 @@ import ru.samara.mapapp.activities.contents.CreateEventContent;
 import ru.samara.mapapp.activities.contents.EventLayoutContent;
 import ru.samara.mapapp.activities.contents.EventSearchContent;
 import ru.samara.mapapp.data.MyProfile;
+import ru.samara.mapapp.dialogs.DateTimePickerDialog;
 import ru.samara.mapapp.events.Event;
 
 public class MainActivity extends AppCompatActivity
@@ -50,6 +51,7 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        new DateTimePickerDialog(this, timeUNIX -> System.out.println()).show();
         setContentView(R.layout.main_activity);
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);

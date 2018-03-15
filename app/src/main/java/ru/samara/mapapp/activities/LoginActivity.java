@@ -11,7 +11,6 @@ import com.vk.sdk.VKCallback;
 import com.vk.sdk.VKScope;
 import com.vk.sdk.VKSdk;
 import com.vk.sdk.api.VKError;
-import com.vk.sdk.util.VKUtil;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -53,7 +52,8 @@ public class LoginActivity extends AppCompatActivity {
                     });
                     intent.putExtra(AVATAR, DownloadImageTask.getImage(object.getString("photo_200")));
                     intent.putExtra(TOKEN, object.getString("token"));
-                    intent.putExtra(MAIN_ID, object.getString("main_id"));
+                    String id = object.getString("main_id");
+                    intent.putExtra(MAIN_ID, Integer.parseInt(id));
                     startActivity(intent);
                 } catch (JSONException ignored) {
                 }
