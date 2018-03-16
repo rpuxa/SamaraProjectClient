@@ -5,6 +5,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Spinner;
 
@@ -35,7 +36,13 @@ public class EventSearchContent extends Content {
     public void onCreate(MainActivity parent, Intent intent) {
         getParent().getToolbar().setSubtitle("Найти мероприятие");
         list = new EventsList(getParent());
-        setEventTypeSpinner();
+        //<editor-fold desc="Установка фильтров мероприятий
+        Filters filters = new Filters();
+        filters.setEventTypeSpinner();
+        filters.setPaidSpinner();
+        filters.setNameFilter();
+        filters.setIsMyEventFilter();
+        //</editor-fold>
         setListeners();
         list.setMainEventList((ListView) findViewById(R.id.mainEventList));
         getEvents();
@@ -46,37 +53,9 @@ public class EventSearchContent extends Content {
         return R.layout.event_list;
     }
 
-    private void setEventTypeSpinner() {
-        Spinner spinner = (Spinner) findViewById(R.id.eventTypeSpinner);
-        ArrayList<String> typesNames = new ArrayList<>(EventType.types.size());
-        typesNames.add("Любой");
-        for (EventType type : EventType.types.values())
-            typesNames.add(type.getName());
-        spinner.setAdapter(new ArrayAdapter<>(getParent(), R.layout.support_simple_spinner_dropdown_item, typesNames));
-        final int[] type = {-1};
-        EventSearchFilter filter = event -> type[0] == -1 || type[0] == event.getTypeId();
-        list.addFilter(filter);
-        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                if (i == 0) {
-                    type[0] = -1;
-                    return;
-                }
-                type[0] = EventType.getByName(typesNames.get(i)).getId();
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {
-            }
-        });
-    }
-
     private void setListeners() {
         findViewById(R.id.settings).setOnClickListener(v -> ActivityUtils.changeVisible(findViewById(R.id.settingsLayout)));
         findViewById(R.id.search).setOnClickListener(v -> list.notifyDataSetChanged());
-        final CheckBox checkBox = (CheckBox) findViewById(R.id.isPaid);
-        list.addFilter(event -> checkBox.isChecked() == event.isPaid());
     }
 
     private void getEvents() {
@@ -105,4 +84,67 @@ public class EventSearchContent extends Content {
         }
     }
 
+    private final class Filters {
+
+        private void setIsMyEventFilter() {
+            CheckBox box = (CheckBox) findViewById(R.id.event_search_isMyEvent);
+            EventSearchFilter filter = event -> !box.isChecked() || (getParent().myProfile.getId() == event.getOwnerId());
+            list.addFilter(filter);
+        }
+
+        private void setEventTypeSpinner() {
+            Spinner spinner = (Spinner) findViewById(R.id.eventTypeSpinner);
+            ArrayList<String> typesNames = new ArrayList<>(EventType.types.size());
+            typesNames.add("Любой");
+            for (EventType type : EventType.types.values())
+                typesNames.add(type.getName());
+            spinner.setAdapter(new ArrayAdapter<>(getParent(), R.layout.support_simple_spinner_dropdown_item, typesNames));
+            final int[] type = {-1};
+            EventSearchFilter filter = event -> type[0] == -1 || type[0] == event.getTypeId();
+            list.addFilter(filter);
+            spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                @Override
+                public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                    if (i == 0) {
+                        type[0] = -1;
+                        return;
+                    }
+                    type[0] = EventType.getByName(typesNames.get(i)).getId();
+                }
+
+                @Override
+                public void onNothingSelected(AdapterView<?> adapterView) {
+                }
+            });
+        }
+
+        private void setPaidSpinner() {
+            Spinner spinner = (Spinner) findViewById(R.id.event_search_isPaid);
+            String names[] = {
+                    "Любая", "Бесплатно", "Платно"
+            };
+            spinner.setAdapter(new ArrayAdapter<>(getParent(), R.layout.support_simple_spinner_dropdown_item, names));
+            final int[] type = {0};
+            EventSearchFilter filter = event -> type[0] == 0 || ((type[0] == 2) == (event.isPaid()));
+            list.addFilter(filter);
+            spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                @Override
+                public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                    type[0] = i;
+                }
+
+                @Override
+                public void onNothingSelected(AdapterView<?> adapterView) {
+                }
+            });
+        }
+
+        private void setNameFilter() {
+            EventSearchFilter filter = event -> {
+                String text = ((EditText) findViewById(R.id.searchBar)).getText().toString();
+                return text.isEmpty() || event.getName().lastIndexOf(text) != -1;
+            };
+            list.addFilter(filter);
+        }
+    }
 }

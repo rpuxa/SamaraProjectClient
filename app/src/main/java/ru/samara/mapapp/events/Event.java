@@ -27,6 +27,7 @@ public class Event implements Serializable {
     private int cost;
 
     private View view;
+    private int ownerId;
 
     public Event(int id, Integer typeId, LatLng location, String name, String shortDescription, String longDescription,
                  GregorianCalendar date, int cost, ViewGroup parent, MainActivity activity) {
@@ -133,5 +134,9 @@ public class Event implements Serializable {
 
     public void setCost(int cost) {
         this.cost = cost;
+    }
+
+    public int getOwnerId() {
+        return ownerId;
     }
 }

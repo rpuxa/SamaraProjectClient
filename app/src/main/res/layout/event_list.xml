@@ -41,7 +41,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:visibility="gone">
+        android:visibility="visible">
 
         <TextView
             android:id="@+id/textView5"
@@ -56,6 +56,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
+
             <TableRow
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
@@ -65,12 +66,33 @@
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:layout_weight="0"
-                    android:gravity="center"
+                    android:gravity="center_vertical"
+                    android:paddingLeft="5dp"
                     android:text="Тип мероприятия" />
 
                 <Spinner
                     android:id="@+id/eventTypeSpinner"
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1" />
+            </TableRow>
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <TextView
+                    android:id="@+id/tex"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_weight="0"
+                    android:gravity="center_vertical"
+                    android:paddingLeft="5dp"
+                    android:text="Цена" />
+
+                <Spinner
+                    android:id="@+id/event_search_isPaid"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1" />
             </TableRow>
@@ -80,19 +102,12 @@
                 android:layout_height="match_parent">
 
                 <CheckBox
-                    android:id="@+id/isPaid"
-                    android:layout_width="match_parent"
+                    android:id="@+id/event_search_isMyEvent"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Платное" />
+                    android:text="Показать только мои мероприятия" />
             </TableRow>
 
-            <TableRow
-                android:layout_width="match_parent"
-                android:layout_height="match_parent" />
-
-            <TableRow
-                android:layout_width="match_parent"
-                android:layout_height="match_parent" />
         </TableLayout>
 
     </LinearLayout>
