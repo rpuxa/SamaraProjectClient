@@ -30,7 +30,7 @@ public class ChatListAdapter extends BaseAdapter {
     }
 
     public void addComment(Comment comment) {
-        chatList.add(comment);
+        chatList.add(0, comment);
         notifyDataSetChanged();
     }
 

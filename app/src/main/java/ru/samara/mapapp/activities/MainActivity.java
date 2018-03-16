@@ -117,6 +117,13 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
+    public void onBackPressed() {
+        if (activeContent instanceof EventSearchContent)
+            return;
+        startContent(EventSearchContent.class);
+    }
+
+    @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
             case R.id.menuCreateNewEvent:

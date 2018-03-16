@@ -87,7 +87,9 @@ public class CreateEventContent extends Content {
         String shortDescription = ((EditText) findViewById(R.id.newEventShortDescription)).getText().toString();
         String longDescription = ((EditText) findViewById(R.id.newEventLongDescription)).getText().toString();
         Integer type = typeSelected;
-        int cost = Integer.parseInt(((EditText) findViewById(R.id.newEventCost)).getText().toString());
+        String costString =((EditText) findViewById(R.id.newEventCost)).getText().toString();
+        int cost = costString.length() > 0 ? Integer.parseInt(costString) : 0;
+
         Connect.send("addevent",
                 "main_id", String.valueOf(getParent().myProfile.getId()),
                 "token", getParent().myProfile.getToken(),
