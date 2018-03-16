@@ -1,21 +1,16 @@
 package ru.samara.mapapp.events;
 
-import android.app.Activity;
-import android.content.Intent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.ListView;
 
 import com.google.android.gms.maps.model.LatLng;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.GregorianCalendar;
 
 import ru.samara.mapapp.activities.MainActivity;
-import ru.samara.mapapp.activities.contents.EventLayoutContent;
 
 public class EventsList extends BaseAdapter {
     private ArrayList<Event> events;
@@ -42,7 +37,7 @@ public class EventsList extends BaseAdapter {
         mainEventList.setAdapter(this);
     }
 
-    private Event[] getEvents() {
+    private Event[] filterEvents() {
         ArrayList<Event> filteredEvents = new ArrayList<>();
         label: for (Event event : events) {
             for (EventSearchFilter filter : filters) {
@@ -61,7 +56,7 @@ public class EventsList extends BaseAdapter {
 
     @Override
     public int getCount() {
-        filteredEvents = getEvents();
+        filteredEvents = filterEvents();
         return filteredEvents.length;
     }
 
