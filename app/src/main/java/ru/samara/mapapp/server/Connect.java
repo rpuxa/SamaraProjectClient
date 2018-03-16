@@ -60,24 +60,24 @@ public final class Connect extends AsyncTask<String, Void, String> {
     public static String send(String... args) {
         try {
             return new Connect().execute(args).get();
-        } catch (InterruptedException | ExecutionException ignored) {
+        } catch (InterruptedException | ExecutionException e) {
+            throw new RuntimeException(e.getMessage());
         }
-        throw new RuntimeException("Fail!");
     }
 
     public static JSONObject sendToJSONObject(String... args) {
         try {
             return new JSONObject(send(args));
-        } catch (JSONException ignored) {
+        } catch (JSONException e) {
+            throw new RuntimeException(e.getMessage());
         }
-        throw new RuntimeException("Fail!");
     }
 
     public static JSONArray sendToJSONArray(String... args) {
         try {
             return new JSONArray(send(args));
-        } catch (JSONException ignored) {
+        } catch (JSONException e) {
+            throw new RuntimeException(e.getMessage());
         }
-        throw new RuntimeException("Fail!");
     }
 }

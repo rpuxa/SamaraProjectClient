@@ -7,6 +7,10 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import ru.samara.mapapp.R;
 import ru.samara.mapapp.activities.Content;
 import ru.samara.mapapp.activities.MainActivity;
@@ -35,11 +39,29 @@ public class EventLayoutContent extends Content {
         Event event = (Event) bundle.get(EVENT);
         setLayoutEvent(event);
         setListeners(event);
-        updateComments(0, 100);
+        updateComments(0, 100, event);
     }
 
-    private void updateComments(int from, int to) {
-
+    private void updateComments(int from, int to, Event event) {
+        try {
+            JSONObject object = Connect.sendToJSONObject("get_comments",
+                    "id", String.valueOf(event.getId()),
+                    "from", String.valueOf(from),
+                    "to", String.valueOf(to)
+            );
+            JSONArray comments = object.getJSONArray("comments");
+            for (int i = 0; i < comments.length(); i++) {
+                JSONObject commentObject = comments.getJSONObject(i);
+                Comment comment = new Comment(
+                        commentObject.getInt("author_id"),
+                        commentObject.getString("author_name"),
+                        commentObject.getString("text"),
+                        commentObject.getLong("time")
+                );
+                addComment(comment);
+            }
+        } catch (JSONException ignored) {
+        }
     }
 
     private void setLayoutEvent(Event event) {
@@ -59,7 +81,12 @@ public class EventLayoutContent extends Content {
         findViewById(R.id.button_send_coment).setOnClickListener(v -> {
             String commentString = commentEdit.getText().toString();
             if (commentString.length() > 0) {
-                Comment comment = new Comment(0, "Name", commentString);
+                Comment comment = new Comment(
+                        getParent().myProfile.getId(),
+                        getParent().myProfile.getName(),
+                        commentString,
+                        System.currentTimeMillis() / 1000
+                );
                 sendCommentToServer(comment, event);
                 addComment(comment);
                 commentEdit.setText("");
@@ -82,8 +109,8 @@ public class EventLayoutContent extends Content {
         Connect.send("add_comment",
                 "main_id", String.valueOf(getParent().myProfile.getId()),
                 "event_id", String.valueOf(event.getId()),
-                "token", "\"" + getParent().myProfile.getToken() + "\"",
-                "text", "\"" + comment.getText() + "\""
+                "token", getParent().myProfile.getToken(),
+                "text", comment.getText()
         );
     }
 
