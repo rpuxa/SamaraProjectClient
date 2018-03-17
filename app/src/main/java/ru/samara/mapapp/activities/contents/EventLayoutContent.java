@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.IdRes;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -83,6 +82,7 @@ public class EventLayoutContent extends Content {
                         commentObject.getString("text"),
                         commentObject.getLong("time")
                 );
+                comment.loadProfile(getParent(), adapter);
                 addComment(comment);
             }
         } catch (JSONException ignored) {
@@ -152,6 +152,7 @@ public class EventLayoutContent extends Content {
                         commentString,
                         System.currentTimeMillis() / 1000
                 );
+                comment.loadProfile(getParent(), adapter);
                 sendCommentToServer(comment, event);
                 addComment(comment);
                 commentEdit.setText("");
@@ -168,7 +169,8 @@ public class EventLayoutContent extends Content {
         tvDate.setText(dateString);
         tvDate.setOnLongClickListener(v -> {
             new DateTimePickerDialog(getParent(), timeUNIX -> {
-                tvDate.setText("Дата: " + DateUtils.dateToString(timeUNIX));
+                String dateString0 = "Дата: " + DateUtils.dateToString(timeUNIX);
+                tvDate.setText(dateString0);
             }).show();
             return false;
         });

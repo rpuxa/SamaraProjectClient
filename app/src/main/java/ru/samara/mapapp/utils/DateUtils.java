@@ -10,9 +10,19 @@ public final class DateUtils {
     }
 
     public static String dateToString(GregorianCalendar calendar) {
-        return calendar.get(Calendar.HOUR) + ":" + ((calendar.get(Calendar.MINUTE) < 10) ? "0" : "")
-                + calendar.get(Calendar.MINUTE) + " " + calendar.get(Calendar.DAY_OF_MONTH) + "." + calendar.get(Calendar.MONTH) + "." +
+        return printZero(calendar.get(Calendar.HOUR))
+                + ":" +
+                printZero(calendar.get(Calendar.MINUTE))
+                + " " +
+                printZero(calendar.get(Calendar.DAY_OF_MONTH))
+                + "." +
+                printZero(calendar.get(Calendar.MONTH))
+                + "." +
                 calendar.get(Calendar.YEAR);
+    }
+
+    private static String printZero(int x) {
+        return ((x < 10) ? "0" : "") + x;
     }
 
     public static String dateToString(long time) {

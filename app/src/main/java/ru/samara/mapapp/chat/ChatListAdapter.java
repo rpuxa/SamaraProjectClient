@@ -62,7 +62,7 @@ public class ChatListAdapter extends BaseAdapter {
         Comment comment = getComment(position);
         ((TextView) view.findViewById(R.id.tv_user_name)).setText(comment.getUserName());
         ((TextView) view.findViewById(R.id.tv_chat_text)).setText(comment.getText());
-        ((ImageView) view.findViewById(R.id.iv_avatar_user)).setImageResource(R.drawable.sport);
+        ((ImageView) view.findViewById(R.id.iv_avatar_user)).setImageBitmap(comment.getAuthor().getAvatar());
         return view;
     }
 }
