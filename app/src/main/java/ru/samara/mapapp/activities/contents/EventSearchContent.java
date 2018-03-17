@@ -158,4 +158,5 @@ public class EventSearchContent extends Content {
             list.addFilter(filter);
         }
     }
+
 }

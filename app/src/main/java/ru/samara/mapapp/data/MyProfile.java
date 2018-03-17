@@ -17,4 +17,6 @@ public class MyProfile extends Profile {
     public String getToken() {
         return token;
     }
+
+
 }

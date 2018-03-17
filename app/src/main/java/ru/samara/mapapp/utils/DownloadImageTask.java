@@ -48,4 +48,5 @@ public final class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
     public interface DownloadProgressListener {
         void onComplete(Bitmap bitmap);
     }
+
 }

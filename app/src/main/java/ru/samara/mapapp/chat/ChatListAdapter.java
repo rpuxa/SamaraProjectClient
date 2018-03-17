@@ -65,4 +65,5 @@ public class ChatListAdapter extends BaseAdapter {
         ((ImageView) view.findViewById(R.id.iv_avatar_user)).setImageBitmap(comment.getAuthor().getAvatar());
         return view;
     }
+
 }

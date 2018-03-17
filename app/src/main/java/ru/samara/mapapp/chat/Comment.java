@@ -48,4 +48,5 @@ public class Comment {
     public Profile getAuthor() {
         return author;
     }
+
 }

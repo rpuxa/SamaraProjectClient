@@ -34,4 +34,5 @@ public final class DateUtils {
         calendar.setTime(new Date(1000 * time));
         return calendar;
     }
+
 }
