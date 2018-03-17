@@ -15,6 +15,9 @@ import com.vk.sdk.api.VKError;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import ru.samara.mapapp.cache.Conservation;
+import ru.samara.mapapp.cache.Conserved;
+import ru.samara.mapapp.cache.Singleton;
 import ru.samara.mapapp.server.Connect;
 import ru.samara.mapapp.utils.DownloadImageTask;
 
@@ -31,7 +34,11 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        VKSdk.login(this, VKScope.OFFLINE);
+        if (ProfileToken.profileToken.token == null)
+            VKSdk.login(this, VKScope.OFFLINE);
+        else {
+            logIn(ProfileToken.profileToken.token);
+        }
     }
 
     @Override
@@ -40,29 +47,50 @@ public class LoginActivity extends AppCompatActivity {
         VKSdk.onActivityResult(requestCode, resultCode, data, new VKCallback<VKAccessToken>() {
             @Override
             public void onResult(VKAccessToken res) {
-                Intent intent = new Intent(instant, MainActivity.class);
-                JSONObject object = Connect.sendToJSONObject("auth_vk",
-                        "token", res.accessToken
-                );
-                try {
-                    intent.putExtra(ACTION, LOG_IN);
-                    intent.putExtra(NAME_LAST_NAME, new String[]{
-                            object.getString("first_name"),
-                            object.getString("last_name"),
-                    });
-                    intent.putExtra(AVATAR, DownloadImageTask.getImage(object.getString("photo_200")));
-                    intent.putExtra(TOKEN, object.getString("token"));
-                    String id = object.getString("main_id");
-                    intent.putExtra(MAIN_ID, Integer.parseInt(id));
-                    startActivity(intent);
-                } catch (JSONException ignored) {
-                }
+                logIn(res.accessToken);
             }
 
             @Override
             public void onError(VKError error) {
             }
         });
+    }
+
+    private void logIn(String token) {
+        Intent intent = new Intent(instant, MainActivity.class);
+        JSONObject object = Connect.sendToJSONObject("auth_vk",
+                "token", token
+        );
+        try {
+            intent.putExtra(ACTION, LOG_IN);
+            intent.putExtra(NAME_LAST_NAME, new String[]{
+                    object.getString("first_name"),
+                    object.getString("last_name"),
+            });
+            intent.putExtra(AVATAR, DownloadImageTask.getImage(object.getString("photo_200")));
+            intent.putExtra(TOKEN, object.getString("token"));
+            String id = object.getString("main_id");
+            intent.putExtra(MAIN_ID, Integer.parseInt(id));
+            ProfileToken.profileToken.setToken(token);
+            startActivity(intent);
+        } catch (JSONException ignored) {
+        }
+    }
+
+
+    static class ProfileToken implements Conserved {
+        @Singleton
+        public static ProfileToken profileToken = new ProfileToken();
+
+        static {
+            Conservation.addConservedClass(ProfileToken.class);
+        }
+
+        String token;
+
+        public void setToken(String token) {
+            this.token = token;
+        }
     }
 
 }

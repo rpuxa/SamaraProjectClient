@@ -8,6 +8,9 @@ import android.widget.ListView;
 import com.google.android.gms.maps.model.LatLng;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.GregorianCalendar;
 
 import ru.samara.mapapp.activities.MainActivity;
@@ -30,6 +33,12 @@ public class EventsList extends BaseAdapter {
         events.add(new Event(
                 id, typeId, location, name, shortDescription, longDescription, date, cost, mainEventList, activity
         ));
+
+        Collections.sort(events, (o1, o2) -> {
+            GregorianCalendar date1 = o1.getDate();
+            GregorianCalendar date2 = o2.getDate();
+            return date1.compareTo(date2);
+        });
     }
 
     public void setMainEventList(ListView mainEventList) {
@@ -39,7 +48,8 @@ public class EventsList extends BaseAdapter {
 
     private Event[] filterEvents() {
         ArrayList<Event> filteredEvents = new ArrayList<>();
-        label: for (Event event : events) {
+        label:
+        for (Event event : events) {
             for (EventSearchFilter filter : filters) {
                 boolean isSuited = filter.suit(event);
                 if (!isSuited)

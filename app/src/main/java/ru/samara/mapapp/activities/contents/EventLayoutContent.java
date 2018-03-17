@@ -2,7 +2,9 @@ package ru.samara.mapapp.activities.contents;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.IdRes;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -20,12 +22,15 @@ import ru.samara.mapapp.activities.MainActivity;
 import ru.samara.mapapp.activities.MapActivity;
 import ru.samara.mapapp.chat.ChatListAdapter;
 import ru.samara.mapapp.chat.Comment;
+import ru.samara.mapapp.dialogs.DateTimePickerDialog;
 import ru.samara.mapapp.events.Event;
 import ru.samara.mapapp.events.EventType;
 import ru.samara.mapapp.server.Connect;
+import ru.samara.mapapp.utils.DateUtils;
 
 
 public class EventLayoutContent extends Content {
+
     private EditText commentEdit;
     private ChatListAdapter adapter;
     public static final String EVENT = "event";
@@ -84,17 +89,58 @@ public class EventLayoutContent extends Content {
         }
     }
 
-    private void setLayoutEvent(Event event) {
+    private void setLayoutEvent(final Event event) {
         if (event == null)
             return;
         int type = event.getTypeId();
         EventType t = EventType.getById(type);
         ((ImageView) findViewById(R.id.icon_event)).setImageResource(t.getIcon());
-        String dateString = "Дата: " + event.getStringDate();
-        ((TextView) findViewById(R.id.tv_data_event)).setText(dateString);
-        ((TextView) findViewById(R.id.tv_short_description)).setText(event.getShortDescription());
-        ((TextView) findViewById(R.id.tv_full_description)).setText(event.getLongDescription());
+        @IdRes
+        int[] ids = {
+                R.id.name_switcher, R.id.description_switcher, R.id.full_descripion_switcher
+        };
+        String[][] texts = {
+                {event.getName(), "Название"},
+                {event.getShortDescription(), ""},
+                {event.getLongDescription(), ""}
+        };
+        for (int i = 0; i < ids.length; i++) {
+            ViewSwitcher switcher = (ViewSwitcher) findViewById(ids[i]);
+            ((TextView) switcher.findViewById(R.id.tv_switcher)).setText(texts[i][0]);
+            ((EditText) switcher.findViewById(R.id.et_switcher)).setText(texts[i][1]);
+            switcher.findViewById(R.id.bt_switcher).setOnClickListener(v -> {
+                EditText et = switcher.findViewById(R.id.et_switcher);
+                String stringEt = et.getText().toString();
+                ((TextView) switcher.findViewById(R.id.tv_switcher)).setText(stringEt);
+                et.setText("");
+                switcher.showNext();
+                switch (switcher.getId()) {
+                    case R.id.name_switcher:
+                        event.setName(stringEt);
+                        break;
+                    case R.id.description_switcher:
+                        event.setShortDescription(stringEt);
+                        break;
+                    case R.id.full_descripion_switcher:
+                        event.setLongDescription(stringEt);
+                        break;
+                }
+                updateEvent(event);
+            });
+            switcher.setOnLongClickListener(longClickListener);
+        }
+
     }
+
+    View.OnLongClickListener longClickListener = v -> {
+        ViewSwitcher switcher = (ViewSwitcher) findViewById(v.getId());
+        TextView tw = switcher.findViewById(R.id.tv_switcher);
+        EditText et = switcher.findViewById(R.id.et_switcher);
+        String textTW = tw.getText().toString();
+        switcher.showNext();
+        et.setText(textTW);
+        return true;
+    };
 
     private void setListeners(final Event event) {
         findViewById(R.id.button_send_coment).setOnClickListener(v -> {
@@ -116,12 +162,26 @@ public class EventLayoutContent extends Content {
         findViewById(R.id.event_bt_location).setOnClickListener(v ->
                 MapActivity.gotoLocation(getParent(), event.getLocation())
         );
+
+        TextView tvDate = (TextView) findViewById(R.id.event_tv_date);
+        String dateString = "Дата: " + event.getStringDate();
+        tvDate.setText(dateString);
+        tvDate.setOnLongClickListener(v -> {
+            new DateTimePickerDialog(getParent(), timeUNIX -> {
+                tvDate.setText("Дата: " + DateUtils.dateToString(timeUNIX));
+            }).show();
+            return false;
+        });
     }
 
 
     private void addComment(Comment comment) {
         adapter.addComment(comment);
         adapter.notifyDataSetChanged();
+    }
+
+    private void updateEvent(Event event) {
+
     }
 
 

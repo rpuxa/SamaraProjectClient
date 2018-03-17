@@ -16,6 +16,7 @@ public class App extends Application {
         VKSdk.initialize(this);
     }
 
+
     @Override
     public void onTerminate() {
         super.onTerminate();

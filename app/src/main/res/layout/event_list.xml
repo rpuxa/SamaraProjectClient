@@ -18,7 +18,8 @@
                     android:layout_weight="1"
                     android:ems="10"
                     android:hint="Введите название"
-                    android:inputType="textPersonName" />
+                    android:inputType="textPersonName"
+                    android:focusableInTouchMode="true"/>
 
                 <ImageButton
                     android:id="@+id/search"

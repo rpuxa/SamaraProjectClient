@@ -104,6 +104,8 @@ public class CreateEventContent extends Content {
                         "\"type\":" + type +
                         "}"
         );
+
+        getParent().sendToast("Событие успешно добавлено", true);
     }
 
 

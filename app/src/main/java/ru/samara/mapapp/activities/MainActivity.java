@@ -20,6 +20,7 @@ import android.widget.Toast;
 import ru.samara.mapapp.R;
 import ru.samara.mapapp.activities.contents.CreateEventContent;
 import ru.samara.mapapp.activities.contents.EventSearchContent;
+import ru.samara.mapapp.cache.Conservation;
 import ru.samara.mapapp.data.MyProfile;
 
 public class MainActivity extends AppCompatActivity
@@ -142,6 +143,12 @@ public class MainActivity extends AppCompatActivity
         toast.cancel();
         toast = Toast.makeText(this, massage, (isShort) ? Toast.LENGTH_SHORT : Toast.LENGTH_LONG);
         toast.show();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        Conservation.instance.save(getFilesDir());
     }
 
     public Toolbar getToolbar() {
