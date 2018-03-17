@@ -140,4 +140,8 @@ public class Event implements Serializable {
     public int getOwnerId() {
         return ownerId;
     }
+
+    public long getTime() {
+        return date.getTimeInMillis() / 1000;
+    }
 }
