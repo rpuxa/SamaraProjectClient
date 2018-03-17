@@ -30,7 +30,7 @@ public class Event implements Serializable {
     private int ownerId;
 
     public Event(int id, Integer typeId, LatLng location, String name, String shortDescription, String longDescription,
-                 GregorianCalendar date, int cost, ViewGroup parent, MainActivity activity) {
+                 GregorianCalendar date, int cost, int ownerId, ViewGroup parent, MainActivity activity) {
         this.id = id;
         this.typeId = typeId;
         this.location = location;
@@ -39,6 +39,7 @@ public class Event implements Serializable {
         this.date = date;
         this.cost = cost;
         this.longDescription = longDescription;
+        this.ownerId = ownerId;
         type = EventType.getById(typeId);
         view = makeView(parent, activity);
     }

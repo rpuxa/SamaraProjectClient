@@ -49,7 +49,7 @@ public class EventSearchContent extends Content {
         //</editor-fold>
         setListeners();
         list.setMainEventList((ListView) findViewById(R.id.mainEventList));
-        getEvents();
+        updateEvents();
     }
 
     @Override
@@ -62,14 +62,14 @@ public class EventSearchContent extends Content {
         findViewById(R.id.search).setOnClickListener(v -> list.notifyDataSetChanged());
         SwipeRefreshLayout swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipe_refresher);
         swipeRefreshLayout.setColorSchemeColors(Color.LTGRAY, Color.GRAY, Color.DKGRAY, Color.LTGRAY);
-        swipeRefreshLayout.setOnRefreshListener(() -> {
-            new Handler().postDelayed(() -> {
-                swipeRefreshLayout.setRefreshing(false);
-            }, 1000);
-        });
+        swipeRefreshLayout.setOnRefreshListener(() -> new Handler().postDelayed(() -> {
+            swipeRefreshLayout.setRefreshing(true);
+            updateEvents();
+            swipeRefreshLayout.setRefreshing(false);
+        }, 0));
     }
 
-    private void getEvents() {
+    private void updateEvents() {
         try {
             list.removeAllEvents();
             JSONArray array = (JSONArray) Connect.sendToJSONObject("showallevents").get("events");
@@ -86,7 +86,8 @@ public class EventSearchContent extends Content {
                         object.getString("s_description"),
                         object.getString("l_description"),
                         DateUtils.timeToCalendar(object.getLong("time")),
-                        object.getInt("cost")
+                        object.getInt("cost"),
+                        object.getInt("main_id")
                 );
             }
             list.notifyDataSetChanged();

@@ -32,7 +32,7 @@ import ru.samara.mapapp.utils.DateUtils;
 
 
 public class EventLayoutContent extends Content {
-
+    private boolean canEdit;
     private EditText commentEdit;
     private ChatListAdapter adapter;
     public static final String EVENT = "event";
@@ -40,6 +40,7 @@ public class EventLayoutContent extends Content {
 
     @Override
     public void onCreate(MainActivity parent, Intent intent) {
+
         getParent().getToolbar().setSubtitle("Инфо о мероприятии");
         commentEdit = (EditText) findViewById(R.id.et_coment);
         adapter = new ChatListAdapter(getParent());
@@ -50,6 +51,8 @@ public class EventLayoutContent extends Content {
         Bundle bundle = intent.getExtras();
         assert bundle != null;
         Event event = (Event) bundle.get(EVENT);
+        assert event != null;
+        canEdit = getParent().myProfile.getId() == event.getOwnerId();
         setLayoutEvent(event);
         setListeners(event);
         updateComments(0, 100, event);
@@ -139,9 +142,11 @@ public class EventLayoutContent extends Content {
                 updateEvent(event);
             });
             switcher.setOnLongClickListener(v -> {
-                String textTW = textView.getText().toString();
-                switcher.showNext();
-                editText.setText(textTW);
+                if (canEdit) {
+                    String textTW = textView.getText().toString();
+                    switcher.showNext();
+                    editText.setText(textTW);
+                } else getParent().sendToast("Вы не можете редактировать это мероприятие!", true);
                 return true;
             });
         }
@@ -176,16 +181,18 @@ public class EventLayoutContent extends Content {
         tvDate.setText(dateString);
         tvDate.setOnLongClickListener(v -> {
             new DateTimePickerDialog(getParent(), timeUNIX -> {
-                tvDate.setText("Дата: " + DateUtils.dateToString(timeUNIX));
+                String dateString0 = "Дата: " + DateUtils.dateToString(timeUNIX);
+                tvDate.setText(dateString0);
             }).show();
             return false;
         });
         SwipeRefreshLayout swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipe_chat);
         swipeRefreshLayout.setColorSchemeColors(Color.LTGRAY, Color.GRAY, Color.DKGRAY, Color.LTGRAY);
         swipeRefreshLayout.setOnRefreshListener(() -> new Handler().postDelayed(() -> {
-            swipeRefreshLayout.setRefreshing(false);
+            swipeRefreshLayout.setRefreshing(true);
             updateComments(0, 100, event);
-        }, 1000));
+            swipeRefreshLayout.setRefreshing(false);
+        }, 0));
     }
 
 
