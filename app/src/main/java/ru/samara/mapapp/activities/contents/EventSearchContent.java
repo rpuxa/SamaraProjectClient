@@ -1,5 +1,7 @@
 package ru.samara.mapapp.activities.contents;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -33,20 +35,14 @@ import ru.samara.mapapp.utils.DateUtils;
 
 
 public class EventSearchContent extends Content {
-
+    private AlertDialog dialog;
     private EventsList list;
 
     @Override
     public void onCreate(MainActivity parent, Intent intent) {
         getParent().getToolbar().setSubtitle("Найти мероприятие");
         list = new EventsList(getParent());
-        //<editor-fold desc="Установка фильтров мероприятий
-        Filters filters = new Filters();
-        filters.setEventTypeSpinner();
-        filters.setPaidSpinner();
-        filters.setNameFilter();
-        filters.setIsMyEventFilter();
-        //</editor-fold>
+        dialog = createDialog();
         setListeners();
         list.setMainEventList((ListView) findViewById(R.id.mainEventList));
         updateEvents();
@@ -58,16 +54,41 @@ public class EventSearchContent extends Content {
     }
 
     private void setListeners() {
-        findViewById(R.id.settings).setOnClickListener(v -> ActivityUtils.changeVisible(findViewById(R.id.settingsLayout)));
+        findViewById(R.id.settings).setOnClickListener(v -> {/* ActivityUtils.changeVisible(findViewById(R.id.settingsLayout)*/
+            dialog.show();
+
+        });
         findViewById(R.id.search).setOnClickListener(v -> list.notifyDataSetChanged());
         SwipeRefreshLayout swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipe_refresher);
-        swipeRefreshLayout.setColorSchemeColors(Color.LTGRAY, Color.GRAY, Color.DKGRAY, Color.LTGRAY);
+        swipeRefreshLayout.setColorSchemeColors(Color.LTGRAY, Color.GRAY);
         swipeRefreshLayout.setOnRefreshListener(() -> new Handler().postDelayed(() -> {
             swipeRefreshLayout.setRefreshing(true);
             updateEvents();
             swipeRefreshLayout.setRefreshing(false);
         }, 0));
     }
+
+    private AlertDialog createDialog() {
+        AlertDialog.Builder ad = new AlertDialog.Builder(getParent());
+        View view = getParent().getLayoutInflater().inflate(R.layout.filters_layout, null);
+        ad.setTitle("Фильтры")
+                .setView(view)
+                .setCancelable(true)
+                .setMessage("Выберите сортировку мероприятий:")
+                .setPositiveButton("OK", (dialog, which) -> {
+                    dialog.cancel();
+                    list.notifyDataSetChanged();
+                });
+
+        Filters filters = new Filters();
+        filters.setEventTypeSpinner(view);
+        filters.setPaidSpinner(view);
+        filters.setNameFilter();
+        filters.setIsMyEventFilter(view);
+        dialog = ad.create();
+        return dialog;
+    }
+
 
     private void updateEvents() {
         try {
@@ -98,14 +119,14 @@ public class EventSearchContent extends Content {
 
     private final class Filters {
 
-        private void setIsMyEventFilter() {
-            CheckBox box = (CheckBox) findViewById(R.id.event_search_isMyEvent);
+        private void setIsMyEventFilter(View view) {
+            CheckBox box = view.findViewById(R.id.event_search_isMyEvent);
             EventSearchFilter filter = event -> !box.isChecked() || (getParent().myProfile.getId() == event.getOwnerId());
             list.addFilter(filter);
         }
 
-        private void setEventTypeSpinner() {
-            Spinner spinner = (Spinner) findViewById(R.id.eventTypeSpinner);
+        private void setEventTypeSpinner(View view) {
+            Spinner spinner = view.findViewById(R.id.eventTypeSpinner);
             ArrayList<String> typesNames = new ArrayList<>(EventType.types.size());
             typesNames.add("Любой");
             for (EventType type : EventType.types.values())
@@ -130,8 +151,8 @@ public class EventSearchContent extends Content {
             });
         }
 
-        private void setPaidSpinner() {
-            Spinner spinner = (Spinner) findViewById(R.id.event_search_isPaid);
+        private void setPaidSpinner(View view) {
+            Spinner spinner = view.findViewById(R.id.event_search_isPaid);
             String names[] = {
                     "Любая", "Бесплатно", "Платно"
             };

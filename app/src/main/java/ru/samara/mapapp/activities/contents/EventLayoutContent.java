@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.IdRes;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -53,6 +54,9 @@ public class EventLayoutContent extends Content {
         Event event = (Event) bundle.get(EVENT);
         assert event != null;
         canEdit = getParent().myProfile.getId() == event.getOwnerId();
+        if (canEdit) {
+            findViewById(R.id.tw_organiztor).setVisibility(View.VISIBLE);
+        }
         setLayoutEvent(event);
         setListeners(event);
         updateComments(0, 100, event);
