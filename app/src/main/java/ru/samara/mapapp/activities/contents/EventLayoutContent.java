@@ -202,7 +202,18 @@ public class EventLayoutContent extends Content {
     }
 
     private void updateEvent(Event event) {
-
+        Connect.send("event_edit",
+                "id", String.valueOf(event.getId()),
+                "name", event.getName(),
+                "longitude", String.valueOf(event.getLocation().longitude),
+                "latitude", String.valueOf(event.getLocation().latitude),
+                "s_description", event.getShortDescription(),
+                "l_description", event.getLongDescription(),
+                "type", String.valueOf(event.getTypeId()),
+                "cost", String.valueOf(event.getCost()),
+                "time", String.valueOf(event.getTime()),
+                "token", getParent().myProfile.getToken()
+        );
     }
 
 
