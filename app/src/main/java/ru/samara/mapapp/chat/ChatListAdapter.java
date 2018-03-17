@@ -29,6 +29,10 @@ public class ChatListAdapter extends BaseAdapter {
         this.chatList = chatList;
     }
 
+    public void removeAll() {
+        chatList.clear();
+    }
+
     public void addComment(Comment comment) {
         chatList.add(0, comment);
         notifyDataSetChanged();
@@ -62,6 +66,7 @@ public class ChatListAdapter extends BaseAdapter {
         Comment comment = getComment(position);
         ((TextView) view.findViewById(R.id.tv_user_name)).setText(comment.getUserName());
         ((TextView) view.findViewById(R.id.tv_chat_text)).setText(comment.getText());
+        ((TextView) view.findViewById(R.id.comment_date)).setText(comment.getStringTime());
         ((ImageView) view.findViewById(R.id.iv_avatar_user)).setImageBitmap(comment.getAuthor().getAvatar());
         return view;
     }

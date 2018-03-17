@@ -2,11 +2,11 @@ package ru.samara.mapapp.activities.contents;
 
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.IdRes;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -77,6 +77,7 @@ public class EventLayoutContent extends Content {
                     "to", String.valueOf(to)
             );
             JSONArray comments = object.getJSONArray("comments");
+            adapter.removeAll();
             for (int i = 0; i < comments.length(); i++) {
                 JSONObject commentObject = comments.getJSONObject(i);
                 Comment comment = new Comment(
@@ -109,13 +110,20 @@ public class EventLayoutContent extends Content {
         };
         for (int i = 0; i < ids.length; i++) {
             ViewSwitcher switcher = (ViewSwitcher) findViewById(ids[i]);
-            ((TextView) switcher.findViewById(R.id.tv_switcher)).setText(texts[i][0]);
-            ((EditText) switcher.findViewById(R.id.et_switcher)).setText(texts[i][1]);
+            TextView textView = switcher.findViewById(R.id.tv_switcher);
+            EditText editText = switcher.findViewById(R.id.et_switcher);
+            if (ids[i] == R.id.name_switcher) {
+                textView.setTextSize(20);
+                textView.setTypeface(null, Typeface.BOLD);
+                textView.setTextColor(Color.BLACK);
+            }
+            textView.setText(texts[i][0]);
+            editText.setText(texts[i][1]);
             switcher.findViewById(R.id.bt_switcher).setOnClickListener(v -> {
-                EditText et = switcher.findViewById(R.id.et_switcher);
-                String stringEt = et.getText().toString();
-                ((TextView) switcher.findViewById(R.id.tv_switcher)).setText(stringEt);
-                et.setText("");
+
+                String stringEt = editText.getText().toString();
+                textView.setText(stringEt);
+                editText.setText("");
                 switcher.showNext();
                 switch (switcher.getId()) {
                     case R.id.name_switcher:
@@ -130,20 +138,16 @@ public class EventLayoutContent extends Content {
                 }
                 updateEvent(event);
             });
-            switcher.setOnLongClickListener(longClickListener);
+            switcher.setOnLongClickListener(v -> {
+                String textTW = textView.getText().toString();
+                switcher.showNext();
+                editText.setText(textTW);
+                return true;
+            });
         }
 
     }
 
-    View.OnLongClickListener longClickListener = v -> {
-        ViewSwitcher switcher = (ViewSwitcher) findViewById(v.getId());
-        TextView tw = switcher.findViewById(R.id.tv_switcher);
-        EditText et = switcher.findViewById(R.id.et_switcher);
-        String textTW = tw.getText().toString();
-        switcher.showNext();
-        et.setText(textTW);
-        return true;
-    };
 
     private void setListeners(final Event event) {
         findViewById(R.id.button_send_coment).setOnClickListener(v -> {
@@ -155,8 +159,8 @@ public class EventLayoutContent extends Content {
                         commentString,
                         System.currentTimeMillis() / 1000
                 );
-                comment.loadProfile(getParent(), adapter);
                 sendCommentToServer(comment, event);
+                comment.loadProfile(getParent(), adapter);
                 addComment(comment);
                 commentEdit.setText("");
             } else {
@@ -172,18 +176,16 @@ public class EventLayoutContent extends Content {
         tvDate.setText(dateString);
         tvDate.setOnLongClickListener(v -> {
             new DateTimePickerDialog(getParent(), timeUNIX -> {
-                String dateString0 = "Дата: " + DateUtils.dateToString(timeUNIX);
-                tvDate.setText(dateString0);
+                tvDate.setText("Дата: " + DateUtils.dateToString(timeUNIX));
             }).show();
             return false;
         });
         SwipeRefreshLayout swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipe_chat);
         swipeRefreshLayout.setColorSchemeColors(Color.LTGRAY, Color.GRAY, Color.DKGRAY, Color.LTGRAY);
-        swipeRefreshLayout.setOnRefreshListener(() -> {
-            new Handler().postDelayed(() -> {
-                swipeRefreshLayout.setRefreshing(false);
-            }, 1000);
-        });
+        swipeRefreshLayout.setOnRefreshListener(() -> new Handler().postDelayed(() -> {
+            swipeRefreshLayout.setRefreshing(false);
+            updateComments(0, 100, event);
+        }, 1000));
     }
 
 
@@ -210,6 +212,5 @@ public class EventLayoutContent extends Content {
     public int layout() {
         return R.layout.event_layout;
     }
-
 
 }

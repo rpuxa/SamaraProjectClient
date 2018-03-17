@@ -62,4 +62,7 @@ public class Profile {
         return name;
     }
 
+    public void setAvatar(Bitmap avatar) {
+        this.avatar = avatar;
+    }
 }

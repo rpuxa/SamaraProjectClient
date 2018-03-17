@@ -1,11 +1,13 @@
 package ru.samara.mapapp.chat;
 
 
+import android.app.Activity;
 import android.content.Context;
 import android.widget.BaseAdapter;
 
 import ru.samara.mapapp.data.Profile;
 import ru.samara.mapapp.data.ProfileBase;
+import ru.samara.mapapp.utils.DateUtils;
 
 public class Comment {
     private int userId;
@@ -25,8 +27,11 @@ public class Comment {
         this.text = text;
     }
 
-    public void loadProfile(Context context, BaseAdapter adapter) {
-        author = ProfileBase.base.get(userId, context, bitmap -> adapter.notifyDataSetChanged());
+    public void loadProfile(Activity activity, BaseAdapter adapter) {
+        author = ProfileBase.base.get(userId, activity, bitmap -> {
+            getAuthor().setAvatar(bitmap);
+            activity.runOnUiThread(adapter::notifyDataSetChanged);
+        });
     }
 
     public int getUserId() {
@@ -35,6 +40,10 @@ public class Comment {
 
     public long getTime() {
         return time;
+    }
+
+    public String getStringTime() {
+        return DateUtils.dateToString(time);
     }
 
     public String getUserName() {

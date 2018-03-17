@@ -5,13 +5,14 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:padding="10dp"
-    android:weightSum="2"
+    android:paddingBottom="10dp"
+    android:paddingTop="10dp"
     tools:context="ru.samara.mapapp.activities.MainActivity">
 
 
     <LinearLayout
         android:id="@+id/event_touch_layout"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginEnd="16dp"
         android:layout_weight="1"
@@ -61,9 +62,9 @@
 
     <ImageView
         android:id="@+id/eventOpenMap"
-        android:layout_width="60dp"
+        android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_weight="1"
+        android:layout_weight="8"
         app:srcCompat="@drawable/google_maps_icon" />
 
 </LinearLayout>

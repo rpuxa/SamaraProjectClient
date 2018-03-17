@@ -36,7 +36,7 @@ public final class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
     }
 
     public static Bitmap downloadInBackground(Context context, String url, DownloadProgressListener listener) {
-        final Bitmap[] bitmap = {BitmapFactory.decodeResource(context.getResources(), R.drawable.sport)};
+        final Bitmap[] bitmap = {BitmapFactory.decodeResource(context.getResources(), R.drawable.other)};
         new Thread(() -> {
             bitmap[0] = getImage(url);
             if (listener != null)
