@@ -1,8 +1,11 @@
 package ru.samara.mapapp.activities.contents;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.IdRes;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -173,6 +176,13 @@ public class EventLayoutContent extends Content {
                 tvDate.setText(dateString0);
             }).show();
             return false;
+        });
+        SwipeRefreshLayout swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipe_chat);
+        swipeRefreshLayout.setColorSchemeColors(Color.LTGRAY, Color.GRAY, Color.DKGRAY, Color.LTGRAY);
+        swipeRefreshLayout.setOnRefreshListener(() -> {
+            new Handler().postDelayed(() -> {
+                swipeRefreshLayout.setRefreshing(false);
+            }, 1000);
         });
     }
 

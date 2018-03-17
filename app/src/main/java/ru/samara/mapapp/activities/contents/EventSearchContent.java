@@ -1,6 +1,8 @@
 package ru.samara.mapapp.activities.contents;
 
 import android.content.Intent;
+import android.graphics.Color;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -8,6 +10,7 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Spinner;
+import android.os.Handler;
 
 import com.google.android.gms.maps.model.LatLng;
 
@@ -16,6 +19,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+
 
 import ru.samara.mapapp.R;
 import ru.samara.mapapp.activities.Content;
@@ -56,6 +60,13 @@ public class EventSearchContent extends Content {
     private void setListeners() {
         findViewById(R.id.settings).setOnClickListener(v -> ActivityUtils.changeVisible(findViewById(R.id.settingsLayout)));
         findViewById(R.id.search).setOnClickListener(v -> list.notifyDataSetChanged());
+        SwipeRefreshLayout swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipe_refresher);
+        swipeRefreshLayout.setColorSchemeColors(Color.LTGRAY, Color.GRAY, Color.DKGRAY, Color.LTGRAY);
+        swipeRefreshLayout.setOnRefreshListener(() -> {
+            new Handler().postDelayed(() -> {
+                swipeRefreshLayout.setRefreshing(false);
+            }, 1000);
+        });
     }
 
     private void getEvents() {
