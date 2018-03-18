@@ -1,6 +1,8 @@
 package ru.samara.mapapp.chat;
 
 import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,15 +14,18 @@ import java.util.ArrayList;
 import java.util.List;
 
 import ru.samara.mapapp.R;
+import ru.samara.mapapp.activities.MainActivity;
 
 
 public class ChatListAdapter extends BaseAdapter {
 
     private LayoutInflater inflater;
     private List<Comment> chatList;
+    MainActivity activity;
 
-    public ChatListAdapter(Context context) {
-        inflater = (LayoutInflater) context
+    public ChatListAdapter(MainActivity activity) {
+        this.activity = activity;
+        inflater = (LayoutInflater) activity
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         chatList = new ArrayList<>();
     }
@@ -67,7 +72,12 @@ public class ChatListAdapter extends BaseAdapter {
         ((TextView) view.findViewById(R.id.tv_user_name)).setText(comment.getUserName());
         ((TextView) view.findViewById(R.id.tv_chat_text)).setText(comment.getText());
         ((TextView) view.findViewById(R.id.comment_date)).setText(comment.getStringTime());
-        ((ImageView) view.findViewById(R.id.iv_avatar_user)).setImageBitmap(comment.getAuthor().getAvatar());
+        ImageView imageView = view.findViewById(R.id.iv_avatar_user);
+        imageView.setImageBitmap(comment.getAuthor().getAvatar());
+        imageView.setOnClickListener(v -> {
+            Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://www.vk.com/" + comment.getAuthor().getVkId()));
+            activity.startActivity(browserIntent);
+        });
         return view;
     }
 

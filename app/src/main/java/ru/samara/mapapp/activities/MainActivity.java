@@ -65,6 +65,9 @@ public class MainActivity extends AppCompatActivity
     public void startContent(Class<? extends Content> clazz) {
         startContent(new Intent(), clazz);
     }
+    public void startUri(Intent intent){
+        startActivity(intent);
+    }
 
     public void startContent(Intent intent, Class<? extends Content> clazz) {
         Content content = null;

@@ -1,13 +1,16 @@
 package ru.samara.mapapp.activities.contents;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.IdRes;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -27,11 +30,14 @@ import ru.samara.mapapp.activities.MainActivity;
 import ru.samara.mapapp.activities.MapActivity;
 import ru.samara.mapapp.chat.ChatListAdapter;
 import ru.samara.mapapp.chat.Comment;
+import ru.samara.mapapp.data.MyProfile;
+import ru.samara.mapapp.data.Profile;
 import ru.samara.mapapp.dialogs.DateTimePickerDialog;
 import ru.samara.mapapp.events.Event;
 import ru.samara.mapapp.events.EventType;
 import ru.samara.mapapp.server.Connect;
 import ru.samara.mapapp.utils.DateUtils;
+import ru.samara.mapapp.utils.DownloadImageTask;
 
 import static android.app.Activity.RESULT_OK;
 
@@ -109,15 +115,28 @@ public class EventLayoutContent extends Content {
         int type = event.getTypeId();
         EventType t = EventType.getById(type);
         ((ImageView) findViewById(R.id.icon_event)).setImageResource(t.getIcon());
+        Profile organizator = MyProfile.getProfileById(getParent(), event.getOwnerId(), bitmap -> {
+            getParent().runOnUiThread(adapter::notifyDataSetChanged);
+        });
+        assert organizator != null;
+        ((TextView) findViewById(R.id.org_name)).setText(organizator.getFullName());
+        ((ImageView) findViewById(R.id.org_avatar)).setImageBitmap(organizator.getAvatar());
+        findViewById(R.id.org_layout).setOnClickListener(v -> {
+            getParent().startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("http://www.vk.com/" + organizator.getVkId())));
+        });
+
         @IdRes
         int[] ids = {
-                R.id.name_switcher, R.id.description_switcher, R.id.full_descripion_switcher
+                R.id.name_switcher, R.id.cost_event, R.id.description_switcher, R.id.full_descripion_switcher
         };
+
         String[][] texts = {
                 {event.getName(), "Название"},
+                {event.getCost() == 0 ? "Бесплатно" : "Цена " + event.getCost(), ""},
                 {event.getShortDescription(), ""},
                 {event.getLongDescription(), ""}
         };
+
         for (int i = 0; i < ids.length; i++) {
             ViewSwitcher switcher = (ViewSwitcher) findViewById(ids[i]);
             TextView textView = switcher.findViewById(R.id.tv_switcher);
@@ -178,7 +197,7 @@ public class EventLayoutContent extends Content {
                 getParent().sendToast("Сначала введите потом кликайте!", true);
             }
         });
-       View location = findViewById(R.id.event_bt_location);
+        View location = findViewById(R.id.event_bt_location);
         location.setOnClickListener(v ->
                 MapActivity.gotoLocation(getParent(), event.getLocation())
         );
@@ -206,6 +225,10 @@ public class EventLayoutContent extends Content {
             swipeRefreshLayout.setRefreshing(false);
         }, 0));
 
+findViewById(R.id.icon_event).setOnLongClickListener(v -> {
+
+    return false;
+});
     }
 
     @Override

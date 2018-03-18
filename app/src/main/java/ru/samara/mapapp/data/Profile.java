@@ -65,4 +65,8 @@ public class Profile {
     public void setAvatar(Bitmap avatar) {
         this.avatar = avatar;
     }
+
+    public int getVkId() {
+        return vkId;
+    }
 }
