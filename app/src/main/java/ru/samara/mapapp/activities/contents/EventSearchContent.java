@@ -54,6 +54,7 @@ public class EventSearchContent extends Content {
         findViewById(R.id.settings).setOnClickListener(v -> dialog.show());
         findViewById(R.id.search).setOnClickListener(v -> list.notifyDataSetChanged());
         SwipeRefreshLayout swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipe_refresher);
+        swipeRefreshLayout.setColorSchemeResources(R.color.mainColor);
         swipeRefreshLayout.setColorSchemeColors(Color.LTGRAY, Color.GRAY);
         swipeRefreshLayout.setOnRefreshListener(() -> new Handler().postDelayed(() -> {
             swipeRefreshLayout.setRefreshing(true);

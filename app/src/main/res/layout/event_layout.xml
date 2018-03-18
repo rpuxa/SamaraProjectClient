@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/tabhost"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="match_parent"
     android:orientation="vertical">
 
 
@@ -16,12 +16,71 @@
         <TabWidget
             android:id="@android:id/tabs"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:background="@color/common_google_signin_btn_text_dark_default" />
 
         <FrameLayout
             android:id="@android:id/tabcontent"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
+
+            <LinearLayout
+                android:id="@+id/tab_chat"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="5dp"
+                    android:background="@drawable/rounded"
+                    android:elevation="4dp"
+                    android:orientation="horizontal"
+                    android:padding="5dp"
+                    android:translationZ="2dp">
+
+                    <EditText
+                        android:id="@+id/et_coment"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginEnd="10dp"
+                        android:layout_weight="5"
+                        android:gravity="top"
+                        android:hint="Добавить комментарий..." />
+
+                    <ImageView
+                        android:id="@+id/button_send_coment"
+                        android:layout_width="47dp"
+                        android:layout_height="50dp"
+                        android:layout_gravity="center"
+                        android:layout_weight="1"
+                        app:srcCompat="@drawable/sendmessage" />
+
+                </LinearLayout>
+
+                <android.support.v4.widget.SwipeRefreshLayout
+                    android:elevation="4dp"
+                    android:translationZ="2dp"
+                    android:id="@+id/swipe_chat"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_margin="5dp"
+                    android:layout_weight="5"
+                    android:background="@drawable/rounded"
+                    android:padding="4dp">
+
+
+                    <ListView
+                        android:id="@+id/chat_list"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        />
+                </android.support.v4.widget.SwipeRefreshLayout>
+
+            </LinearLayout>
 
             <LinearLayout
                 android:id="@+id/tab_event"
@@ -33,11 +92,11 @@
 
                 <ScrollView
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                    android:layout_height="match_parent">
 
                     <LinearLayout
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
+                        android:layout_height="match_parent"
                         android:orientation="vertical"
                         android:paddingTop="8dp">
 
@@ -61,22 +120,22 @@
                             <LinearLayout
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:layout_gravity="center"
                                 android:layout_marginBottom="10dp"
                                 android:layout_marginStart="5dp"
                                 android:layout_marginTop="5dp"
                                 android:layout_weight="3"
                                 android:background="@drawable/rounded"
-                                android:elevation="7dp"
                                 android:orientation="vertical"
                                 android:paddingBottom="10dp"
-                                android:translationZ="5dp">
+                                android:elevation="4dp"
+                                android:translationZ="2dp">
 
                                 <ImageView
                                     android:id="@+id/icon_event"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="105dp"
+                                    android:layout_width="60dp"
+                                    android:layout_height="60dp"
                                     android:layout_gravity="center"
+                                    android:layout_marginTop="5dp"
                                     app:srcCompat="@drawable/common_google_signin_btn_icon_dark" />
 
                                 <LinearLayout
@@ -112,11 +171,11 @@
                                 android:layout_margin="10dp"
                                 android:layout_weight="2"
                                 android:background="@drawable/rounded"
-                                android:elevation="7dp"
                                 android:orientation="vertical"
                                 android:paddingBottom="18dp"
                                 android:paddingLeft="8dp"
-                                android:translationZ="5dp">
+                                android:elevation="4dp"
+                                android:translationZ="2dp">
 
 
                                 <include
@@ -156,12 +215,12 @@
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
-                            android:layout_margin="7dp"
+                            android:layout_margin="9dp"
                             android:background="@drawable/rounded"
-                            android:elevation="7dp"
                             android:orientation="vertical"
                             android:paddingLeft="8dp"
-                            android:translationZ="5dp">
+                            android:elevation="4dp"
+                            android:translationZ="2dp">
 
                             <TextView
                                 android:id="@+id/textView4"
@@ -186,54 +245,6 @@
 
 
                 </ScrollView>
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/tab_chat"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical">
-
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="5dp"
-                    android:orientation="horizontal">
-
-                    <EditText
-                        android:id="@+id/et_coment"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:layout_marginEnd="10dp"
-                        android:layout_weight="5"
-                        android:gravity="top"
-                        android:hint="Добавить комментарий..." />
-
-                    <ImageView
-                        android:id="@+id/button_send_coment"
-                        android:layout_width="47dp"
-                        android:layout_height="50dp"
-                        android:layout_gravity="center"
-                        android:layout_weight="1"
-                        app:srcCompat="@drawable/sendmessage" />
-                </LinearLayout>
-
-                <android.support.v4.widget.SwipeRefreshLayout
-                    android:id="@+id/swipe_chat"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent">
-
-                    <ListView
-                        android:id="@+id/chat_list"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_marginTop="10dp" />
-
-
-                </android.support.v4.widget.SwipeRefreshLayout>
 
             </LinearLayout>
 

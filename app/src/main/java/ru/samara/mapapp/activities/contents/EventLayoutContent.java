@@ -198,6 +198,7 @@ public class EventLayoutContent extends Content {
             return false;
         });
         SwipeRefreshLayout swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipe_chat);
+        swipeRefreshLayout.setColorSchemeResources(R.color.mainColor);
         swipeRefreshLayout.setColorSchemeColors(Color.LTGRAY, Color.GRAY, Color.DKGRAY, Color.LTGRAY);
         swipeRefreshLayout.setOnRefreshListener(() -> new Handler().postDelayed(() -> {
             swipeRefreshLayout.setRefreshing(true);

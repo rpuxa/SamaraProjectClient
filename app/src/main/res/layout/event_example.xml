@@ -62,8 +62,9 @@
 
     <ImageView
         android:id="@+id/eventOpenMap"
-        android:layout_width="match_parent"
+        android:layout_width="500dp"
         android:layout_height="match_parent"
+        android:layout_gravity="center"
         android:layout_weight="8"
         app:srcCompat="@drawable/google_maps_icon" />
 

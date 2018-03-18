@@ -2,16 +2,17 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item android:title="Мероприятия">
+        <menu>
             <item
-
                 android:id="@+id/menuFoundEvents"
                 android:icon="@android:drawable/ic_menu_search"
                 android:title="Найти" />
-            <item
 
+            <item
                 android:id="@+id/menuCreateNewEvent"
                 android:icon="@android:drawable/ic_input_add"
                 android:title="Создать новое" />
+        </menu>
 
     </item>
 
