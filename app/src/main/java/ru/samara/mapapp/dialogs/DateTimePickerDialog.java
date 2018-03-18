@@ -27,6 +27,7 @@ public class DateTimePickerDialog extends Dialog {
         setContentView(R.layout.date_picker);
         DatePicker datePicker = findViewById(R.id.datePicker);
         TimePicker timePicker = findViewById(R.id.timePicker);
+        timePicker.setIs24HourView(true);
         final int[] hour = {-1}, minute = {-1};
         findViewById(R.id.date_picker_accept).setOnClickListener(view -> {
             if (datePicker.getVisibility() == View.VISIBLE) {

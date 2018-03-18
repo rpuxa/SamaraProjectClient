@@ -8,7 +8,6 @@ import android.os.Handler;
 import android.support.annotation.IdRes;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -179,12 +178,12 @@ public class EventLayoutContent extends Content {
                 getParent().sendToast("Сначала введите потом кликайте!", true);
             }
         });
-        Button locationButton = (Button) findViewById(R.id.event_bt_location);
-        locationButton.setOnClickListener(v ->
+       View location = findViewById(R.id.event_bt_location);
+        location.setOnClickListener(v ->
                 MapActivity.gotoLocation(getParent(), event.getLocation())
         );
         if (canEdit)
-            locationButton.setOnLongClickListener(view -> {
+            location.setOnLongClickListener(view -> {
                 MapActivity.getLocation(getParent());
                 return true;
             });

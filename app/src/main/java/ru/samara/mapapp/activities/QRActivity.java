@@ -68,6 +68,9 @@ public class QRActivity extends AppCompatActivity {
         }
         Bitmap bitmap = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888);
         bitmap.setPixels(pixels, 0, SIZE, 0, 0, w, h);
+
         return bitmap;
     }
+
+
 }

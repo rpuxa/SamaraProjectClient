@@ -47,7 +47,7 @@ public class LoginActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.login_activity);
-        if (ProfileToken.profileToken.token == null)
+        if (ProfileToken.profileToken.token != null)
             logIn(ProfileToken.profileToken.token);
         setDesign();
     }
