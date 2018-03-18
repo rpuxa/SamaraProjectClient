@@ -33,6 +33,7 @@
             android:theme="@style/VK.Transparent" />
 
         <activity android:name="ru.samara.mapapp.activities.MapActivity" />
+        <activity android:name="ru.samara.mapapp.activities.QRActivity" />
         <activity
             android:name="ru.samara.mapapp.activities.MainActivity"
             android:windowSoftInputMode="adjustResize|stateHidden" />

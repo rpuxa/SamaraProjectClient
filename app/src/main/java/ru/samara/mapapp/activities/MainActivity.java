@@ -22,6 +22,8 @@ import ru.samara.mapapp.activities.contents.CreateEventContent;
 import ru.samara.mapapp.activities.contents.EventSearchContent;
 import ru.samara.mapapp.cache.Conservation;
 import ru.samara.mapapp.data.MyProfile;
+import ru.samara.mapapp.qr.IntentIntegrator;
+import ru.samara.mapapp.qr.IntentResult;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -87,6 +89,11 @@ public class MainActivity extends AppCompatActivity
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         activeContent.onActivityResult(requestCode, resultCode, data);
+        IntentResult scanResult = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
+        if (scanResult != null) {
+            scanResult.getContents();
+            System.out.println();
+        }
     }
 
     private void handleBundle(Bundle bundle) {
