@@ -1,9 +1,9 @@
 package ru.samara.mapapp.activities.contents;
 
 import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
+import android.os.Handler;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.View;
 import android.widget.AdapterView;
@@ -12,7 +12,6 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Spinner;
-import android.os.Handler;
 
 import com.google.android.gms.maps.model.LatLng;
 
@@ -22,7 +21,6 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
-
 import ru.samara.mapapp.R;
 import ru.samara.mapapp.activities.Content;
 import ru.samara.mapapp.activities.MainActivity;
@@ -30,7 +28,6 @@ import ru.samara.mapapp.events.EventSearchFilter;
 import ru.samara.mapapp.events.EventType;
 import ru.samara.mapapp.events.EventsList;
 import ru.samara.mapapp.server.Connect;
-import ru.samara.mapapp.utils.ActivityUtils;
 import ru.samara.mapapp.utils.DateUtils;
 
 
@@ -54,10 +51,7 @@ public class EventSearchContent extends Content {
     }
 
     private void setListeners() {
-        findViewById(R.id.settings).setOnClickListener(v -> {/* ActivityUtils.changeVisible(findViewById(R.id.settingsLayout)*/
-            dialog.show();
-
-        });
+        findViewById(R.id.settings).setOnClickListener(v -> dialog.show());
         findViewById(R.id.search).setOnClickListener(v -> list.notifyDataSetChanged());
         SwipeRefreshLayout swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipe_refresher);
         swipeRefreshLayout.setColorSchemeColors(Color.LTGRAY, Color.GRAY);
@@ -175,7 +169,7 @@ public class EventSearchContent extends Content {
         private void setNameFilter() {
             EventSearchFilter filter = event -> {
                 String text = ((EditText) findViewById(R.id.searchBar)).getText().toString();
-                return text.isEmpty() || event.getName().lastIndexOf(text) != -1;
+                return text.isEmpty() || event.getName().toLowerCase().lastIndexOf(text.toLowerCase()) != -1;
             };
             list.addFilter(filter);
         }

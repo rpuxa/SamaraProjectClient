@@ -9,6 +9,7 @@ import org.json.JSONObject;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
+import java.net.URI;
 import java.net.URL;
 import java.util.concurrent.ExecutionException;
 
@@ -32,6 +33,8 @@ public final class Connect extends AsyncTask<String, Void, String> {
         stringArgs = new StringBuilder(stringArgs.substring(0, stringArgs.length() - 1));
         try {
             URL url = new URL(ADDRESS + command + stringArgs);
+            URI uri = new URI(url.getProtocol(), url.getUserInfo(), url.getHost(), url.getPort(), url.getPath(), url.getQuery(), url.getRef());
+            url = new URL(uri.toASCIIString());
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
             connection.setRequestMethod("GET");
             connection.setUseCaches(false);
