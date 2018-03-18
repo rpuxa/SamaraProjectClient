@@ -143,11 +143,29 @@ public class MainActivity extends AppCompatActivity
             case R.id.menuFoundEvents:
                 startContent(EventSearchContent.class);
                 break;
+            case R.id.show_qr_code:
+                loadQRCode();
+                break;
         }
         drawer.closeDrawers();
         return true;
     }
 
+    private void loadQRCode() {
+//        try {
+//            JSONObject obj = Connect.sendToJSONObject("get_qr",
+//                    "id", String.valueOf(myProfile.getId()),
+//                    "token", myProfile.getToken()
+//            );
+//            String s = obj.getString("status");
+//            if (s.equalsIgnoreCase("Ok")){
+//                String token = obj.getString("token");
+//                QRActivity.show(this, token);
+//            }
+//        } catch (JSONException e) {
+//            e.printStackTrace();
+//        }
+    }
 
     public void sendToast(String massage, boolean isShort) {
         toast.cancel();

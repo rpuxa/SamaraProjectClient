@@ -15,5 +15,15 @@
         </menu>
 
     </item>
+    <item android:title="Check-in">
+        <menu>
+
+            <item
+                android:id="@+id/show_qr_code"
+                android:icon="@android:drawable/ic_menu_search"
+                android:title="Показать QR код" />
+        </menu>
+
+    </item>
 
 </menu>
