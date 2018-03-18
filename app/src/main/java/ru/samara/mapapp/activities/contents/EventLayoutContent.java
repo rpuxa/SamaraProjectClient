@@ -8,12 +8,15 @@ import android.os.Handler;
 import android.support.annotation.IdRes;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TabHost;
 import android.widget.TextView;
 import android.widget.ViewSwitcher;
+
+import com.google.android.gms.maps.model.LatLng;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -31,6 +34,8 @@ import ru.samara.mapapp.events.EventType;
 import ru.samara.mapapp.server.Connect;
 import ru.samara.mapapp.utils.DateUtils;
 
+import static android.app.Activity.RESULT_OK;
+
 
 public class EventLayoutContent extends Content {
     private boolean canEdit;
@@ -38,10 +43,10 @@ public class EventLayoutContent extends Content {
     private ChatListAdapter adapter;
     public static final String EVENT = "event";
     private TabHost tabHost;
+    private Event event;
 
     @Override
     public void onCreate(MainActivity parent, Intent intent) {
-
         getParent().getToolbar().setSubtitle("Инфо о мероприятии");
         commentEdit = (EditText) findViewById(R.id.et_coment);
         adapter = new ChatListAdapter(getParent());
@@ -51,15 +56,15 @@ public class EventLayoutContent extends Content {
         listView.setAdapter(adapter);
         Bundle bundle = intent.getExtras();
         assert bundle != null;
-        Event event = (Event) bundle.get(EVENT);
+        event = (Event) bundle.get(EVENT);
         assert event != null;
         canEdit = getParent().myProfile.getId() == event.getOwnerId();
         if (canEdit) {
             findViewById(R.id.tw_organiztor).setVisibility(View.VISIBLE);
         }
-        setLayoutEvent(event);
-        setListeners(event);
-        updateComments(0, 100, event);
+        setLayoutEvent();
+        setListeners();
+        updateComments(0, 100);
     }
 
     private void createTabHost() {
@@ -75,8 +80,7 @@ public class EventLayoutContent extends Content {
         tabHost.setCurrentTab(0);
     }
 
-
-    private void updateComments(int from, int to, Event event) {
+    private void updateComments(int from, int to) {
         try {
             JSONObject object = Connect.sendToJSONObject("get_comments",
                     "id", String.valueOf(event.getId()),
@@ -100,7 +104,7 @@ public class EventLayoutContent extends Content {
         }
     }
 
-    private void setLayoutEvent(final Event event) {
+    private void setLayoutEvent() {
         if (event == null)
             return;
         int type = event.getTypeId();
@@ -157,8 +161,7 @@ public class EventLayoutContent extends Content {
 
     }
 
-
-    private void setListeners(final Event event) {
+    private void setListeners() {
         findViewById(R.id.button_send_coment).setOnClickListener(v -> {
             String commentString = commentEdit.getText().toString();
             if (commentString.length() > 0) {
@@ -176,10 +179,15 @@ public class EventLayoutContent extends Content {
                 getParent().sendToast("Сначала введите потом кликайте!", true);
             }
         });
-        findViewById(R.id.event_bt_location).setOnClickListener(v ->
+        Button locationButton = (Button) findViewById(R.id.event_bt_location);
+        locationButton.setOnClickListener(v ->
                 MapActivity.gotoLocation(getParent(), event.getLocation())
         );
-
+        if (canEdit)
+            locationButton.setOnLongClickListener(view -> {
+                MapActivity.getLocation(getParent());
+                return true;
+            });
         TextView tvDate = (TextView) findViewById(R.id.event_tv_date);
         String dateString = "Дата: " + event.getStringDate();
         tvDate.setText(dateString);
@@ -194,11 +202,19 @@ public class EventLayoutContent extends Content {
         swipeRefreshLayout.setColorSchemeColors(Color.LTGRAY, Color.GRAY, Color.DKGRAY, Color.LTGRAY);
         swipeRefreshLayout.setOnRefreshListener(() -> new Handler().postDelayed(() -> {
             swipeRefreshLayout.setRefreshing(true);
-            updateComments(0, 100, event);
+            updateComments(0, 100);
             swipeRefreshLayout.setRefreshing(false);
         }, 0));
+
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == MapActivity.REQUEST_CODE_MAP_CHOSE_LOCATION && resultCode == RESULT_OK) {
+            LatLng location = (LatLng) data.getExtras().get(MapActivity.MAP_CHOSE_LOCATION);
+            event.setLocation(location);
+        }
+    }
 
     private void addComment(Comment comment) {
         adapter.addComment(comment);
@@ -220,7 +236,6 @@ public class EventLayoutContent extends Content {
         );
     }
 
-
     private void sendCommentToServer(Comment comment, Event event) {
         Connect.send("add_comment",
                 "main_id", String.valueOf(getParent().myProfile.getId()),
@@ -234,5 +249,4 @@ public class EventLayoutContent extends Content {
     public int layout() {
         return R.layout.event_layout;
     }
-
 }
