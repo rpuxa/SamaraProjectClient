@@ -17,13 +17,15 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import ru.samara.mapapp.R;
 import ru.samara.mapapp.activities.contents.CreateEventContent;
 import ru.samara.mapapp.activities.contents.EventSearchContent;
 import ru.samara.mapapp.cache.Conservation;
 import ru.samara.mapapp.data.MyProfile;
-import ru.samara.mapapp.qr.IntentIntegrator;
-import ru.samara.mapapp.qr.IntentResult;
+import ru.samara.mapapp.server.Connect;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -65,9 +67,6 @@ public class MainActivity extends AppCompatActivity
     public void startContent(Class<? extends Content> clazz) {
         startContent(new Intent(), clazz);
     }
-    public void startUri(Intent intent){
-        startActivity(intent);
-    }
 
     public void startContent(Intent intent, Class<? extends Content> clazz) {
         Content content = null;
@@ -92,11 +91,6 @@ public class MainActivity extends AppCompatActivity
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         activeContent.onActivityResult(requestCode, resultCode, data);
-        IntentResult scanResult = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
-        if (scanResult != null) {
-            scanResult.getContents();
-            System.out.println();
-        }
     }
 
     private void handleBundle(Bundle bundle) {
@@ -152,19 +146,19 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void loadQRCode() {
-//        try {
-//            JSONObject obj = Connect.sendToJSONObject("get_qr",
-//                    "id", String.valueOf(myProfile.getId()),
-//                    "token", myProfile.getToken()
-//            );
-//            String s = obj.getString("status");
-//            if (s.equalsIgnoreCase("Ok")){
-//                String token = obj.getString("token");
-//                QRActivity.show(this, token);
-//            }
-//        } catch (JSONException e) {
-//            e.printStackTrace();
-//        }
+        try {
+            JSONObject obj = Connect.sendToJSONObject("get_qr",
+                    "id", String.valueOf(myProfile.getId()),
+                    "token", myProfile.getToken()
+            );
+            String s = obj.getString("status");
+            if (s.equalsIgnoreCase("Ok")){
+                String token = obj.getString("token");
+                QRActivity.show(this, token);
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 
     public void sendToast(String massage, boolean isShort) {

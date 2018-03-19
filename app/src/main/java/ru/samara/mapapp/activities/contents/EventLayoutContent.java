@@ -1,7 +1,6 @@
 package ru.samara.mapapp.activities.contents;
 
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.net.Uri;
@@ -10,7 +9,6 @@ import android.os.Handler;
 import android.support.annotation.IdRes;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -28,16 +26,17 @@ import ru.samara.mapapp.R;
 import ru.samara.mapapp.activities.Content;
 import ru.samara.mapapp.activities.MainActivity;
 import ru.samara.mapapp.activities.MapActivity;
+import ru.samara.mapapp.activities.QRActivity;
 import ru.samara.mapapp.chat.ChatListAdapter;
 import ru.samara.mapapp.chat.Comment;
-import ru.samara.mapapp.data.MyProfile;
 import ru.samara.mapapp.data.Profile;
 import ru.samara.mapapp.dialogs.DateTimePickerDialog;
 import ru.samara.mapapp.events.Event;
 import ru.samara.mapapp.events.EventType;
+import ru.samara.mapapp.qr.IntentIntegrator;
+import ru.samara.mapapp.qr.IntentResult;
 import ru.samara.mapapp.server.Connect;
 import ru.samara.mapapp.utils.DateUtils;
-import ru.samara.mapapp.utils.DownloadImageTask;
 
 import static android.app.Activity.RESULT_OK;
 
@@ -66,6 +65,9 @@ public class EventLayoutContent extends Content {
         canEdit = getParent().myProfile.getId() == event.getOwnerId();
         if (canEdit) {
             findViewById(R.id.tw_organiztor).setVisibility(View.VISIBLE);
+            findViewById(R.id.event_layout_qr_read).setVisibility(View.VISIBLE);
+        } else {
+            findViewById(R.id.event_layout_qr_read).setVisibility(View.GONE);
         }
         setLayoutEvent();
         setListeners();
@@ -115,15 +117,14 @@ public class EventLayoutContent extends Content {
         int type = event.getTypeId();
         EventType t = EventType.getById(type);
         ((ImageView) findViewById(R.id.icon_event)).setImageResource(t.getIcon());
-        Profile organizator = MyProfile.getProfileById(getParent(), event.getOwnerId(), bitmap -> {
+        ImageView organizerAvatar = ((ImageView) findViewById(R.id.org_avatar));
+        Profile organizer = Profile.getProfileById(getParent(), event.getOwnerId(), bitmap -> {
+            organizerAvatar.setImageBitmap(bitmap);
             getParent().runOnUiThread(adapter::notifyDataSetChanged);
         });
-        assert organizator != null;
-        ((TextView) findViewById(R.id.org_name)).setText(organizator.getFullName());
-        ((ImageView) findViewById(R.id.org_avatar)).setImageBitmap(organizator.getAvatar());
-        findViewById(R.id.org_layout).setOnClickListener(v -> {
-            getParent().startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("http://www.vk.com/" + organizator.getVkId())));
-        });
+        assert organizer != null;
+        ((TextView) findViewById(R.id.org_name)).setText(organizer.getFullName());
+        findViewById(R.id.org_layout).setOnClickListener(v -> getParent().startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("http://www.vk.com/id" + organizer.getVkId()))));
 
         @IdRes
         int[] ids = {
@@ -182,6 +183,10 @@ public class EventLayoutContent extends Content {
     private void setListeners() {
         findViewById(R.id.button_send_coment).setOnClickListener(v -> {
             String commentString = commentEdit.getText().toString();
+            if (commentString.length() > 200) {
+                getParent().sendToast("Комментарий не должен превышать 200 символов", false);
+                return;
+            }
             if (commentString.length() > 0) {
                 Comment comment = new Comment(
                         getParent().myProfile.getId(),
@@ -193,8 +198,6 @@ public class EventLayoutContent extends Content {
                 comment.loadProfile(getParent(), adapter);
                 addComment(comment);
                 commentEdit.setText("");
-            } else {
-                getParent().sendToast("Сначала введите потом кликайте!", true);
             }
         });
         View location = findViewById(R.id.event_bt_location);
@@ -224,11 +227,13 @@ public class EventLayoutContent extends Content {
             updateComments(0, 100);
             swipeRefreshLayout.setRefreshing(false);
         }, 0));
-
-findViewById(R.id.icon_event).setOnLongClickListener(v -> {
+        findViewById(R.id.event_layout_qr_read_button).setOnClickListener(view -> {
+            QRActivity.read(getParent());
+        });
+/*findViewById(R.id.icon_event).setOnLongClickListener(v -> {
 
     return false;
-});
+});*/
     }
 
     @Override
@@ -236,6 +241,29 @@ findViewById(R.id.icon_event).setOnLongClickListener(v -> {
         if (requestCode == MapActivity.REQUEST_CODE_MAP_CHOSE_LOCATION && resultCode == RESULT_OK) {
             LatLng location = (LatLng) data.getExtras().get(MapActivity.MAP_CHOSE_LOCATION);
             event.setLocation(location);
+            return;
+        }
+        IntentResult scanResult = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
+        if (scanResult != null) {
+            try {
+                String code = scanResult.getContents();
+                JSONObject obj = Connect.sendToJSONObject("check_qr",
+                        "event_id", String.valueOf(event.getId()),
+                        "token", getParent().myProfile.getToken(),
+                        "qr_token", code
+                );
+                getParent().sendToast(obj.toString(), false);
+                switch (obj.getString("status").toUpperCase()) {
+                    case "OK":
+                        getParent().sendToast("Пользователь зачекинен!", false);
+                        break;
+                    case "ERROR":
+                        getParent().sendToast("Ошибка чтения QR", false);
+                        break;
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -245,13 +273,28 @@ findViewById(R.id.icon_event).setOnLongClickListener(v -> {
     }
 
     private void updateEvent(Event event) {
+        String name = event.getName();
+        String shortDescription = event.getShortDescription();
+        String longDescription = event.getLongDescription();
+        if (name.length() < 5 || name.length() > 20) {
+            getParent().sendToast("Неверное кол-во символов у названия", true);
+            return;
+        }
+        if (shortDescription.length() < 0 || shortDescription.length() > 100) {
+            getParent().sendToast("Неверное кол-во символов у краткого описания", true);
+            return;
+        }
+        if (longDescription.length() < 0 || longDescription.length() > 1000) {
+            getParent().sendToast("Неверное кол-во символов у полного описания", true);
+            return;
+        }
         Connect.send("event_edit",
                 "id", String.valueOf(event.getId()),
-                "name", event.getName(),
+                "name", name,
                 "longitude", String.valueOf(event.getLocation().longitude),
                 "latitude", String.valueOf(event.getLocation().latitude),
-                "s_description", event.getShortDescription(),
-                "l_description", event.getLongDescription(),
+                "s_description", shortDescription,
+                "l_description", longDescription,
                 "type", String.valueOf(event.getTypeId()),
                 "cost", String.valueOf(event.getCost()),
                 "time", String.valueOf(event.getTime()),

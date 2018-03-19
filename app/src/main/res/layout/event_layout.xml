@@ -168,9 +168,9 @@
                             android:layout_margin="9dp"
                             android:background="@drawable/rounded"
 
+                            android:elevation="4dp"
                             android:orientation="vertical"
                             android:padding="10dp"
-                            android:elevation="4dp"
                             android:translationZ="2dp">
 
                             <TextView
@@ -191,18 +191,17 @@
                                 android:layout_height="wrap_content" />
                         </LinearLayout>
 
-
                         <LinearLayout
                             android:id="@+id/org_layout"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_margin="10dp"
                             android:background="@drawable/rounded"
-
+                            android:translationZ="2dp"
+                            android:elevation="4dp"
                             android:orientation="horizontal"
                             android:padding="10dp"
-                            android:translationZ="2dp"
-                            android:elevation="4dp">
+                            >
 
 
                             <ImageView
@@ -239,6 +238,30 @@
                             </LinearLayout>
 
                         </LinearLayout>
+
+                        <LinearLayout
+                            android:id="@+id/event_layout_qr_read"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_margin="10dp"
+                            android:background="@drawable/rounded"
+                            android:elevation="4dp"
+                            android:orientation="vertical"
+                            android:padding="10dp"
+                            android:translationZ="2dp">
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text='С помощью чтения QR кода, вы можете "зачекинить" участника для повышения вашего рейтинга.' />
+
+                            <Button
+                                android:id="@+id/event_layout_qr_read_button"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="Считать QR код" />
+                        </LinearLayout>
+
 
                     </LinearLayout>
 

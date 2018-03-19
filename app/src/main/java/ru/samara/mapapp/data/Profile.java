@@ -16,12 +16,13 @@ public class Profile {
     int reputation;
     int vkId;
 
-    public Profile(int id, String name, String lastName, Bitmap avatar, int reputation) {
+    public Profile(int id, String name, String lastName, Bitmap avatar, int reputation, int vkId) {
         this.id = id;
         this.name = name;
         this.lastName = lastName;
         this.avatar = avatar;
         this.reputation = reputation;
+        this.vkId = vkId;
     }
 
     public Profile() {
@@ -38,7 +39,8 @@ public class Profile {
                     obj.getString("first_name"),
                     obj.getString("last_name"),
                     avatar,
-                    obj.getInt("reputation")
+                    obj.getInt("reputation"),
+                    obj.getInt("vk_id")
             );
         } catch (JSONException e) {
             e.printStackTrace();

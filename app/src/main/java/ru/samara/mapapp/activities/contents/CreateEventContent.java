@@ -88,9 +88,28 @@ public class CreateEventContent extends Content {
         String longDescription = ((EditText) findViewById(R.id.newEventLongDescription)).getText().toString();
         Integer type = typeSelected;
         String costString =((EditText) findViewById(R.id.newEventCost)).getText().toString();
-        int cost = costString.length() > 0 ? Integer.parseInt(costString) : 0;
+        int cost = costString.isEmpty() ? 0 : Integer.parseInt(costString);
+        if (name.length() < 5 || name.length() > 20) {
+            getParent().sendToast("Неверное кол-во символов у названия", true);
+            return;
+        }
+        if (shortDescription.length() < 0 || shortDescription.length() > 100) {
+            getParent().sendToast("Неверное кол-во символов у краткого описания", true);
+            return;
+        }
+        if (longDescription.length() < 0 || longDescription.length() > 1000) {
+            getParent().sendToast("Неверное кол-во символов у полного описания", true);
+            return;
+        }
+        if (timeSelected == null) {
+            getParent().sendToast("Установите дату проведения", true);
+        }
+        if (locationSelected == null) {
+            getParent().sendToast("Установите место проведения", true);
+        }
 
-        Connect.send("addevent",
+
+        String answer = Connect.send("addevent",
                 "main_id", String.valueOf(getParent().myProfile.getId()),
                 "token", getParent().myProfile.getToken(),
                 "request", "{" +
@@ -104,8 +123,13 @@ public class CreateEventContent extends Content {
                         "\"type\":" + type +
                         "}"
         );
-
-        getParent().sendToast("Событие успешно добавлено", true);
+        try {
+            Integer.parseInt(answer);
+            getParent().sendToast("Событие успешно добавлено!", false);
+            getParent().startContent(EventSearchContent.class);
+        } catch (Exception e) {
+            getParent().sendToast("Ошибка в создании события", false);
+        }
     }
 
 }

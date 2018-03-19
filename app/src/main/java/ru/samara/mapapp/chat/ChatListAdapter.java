@@ -75,8 +75,10 @@ public class ChatListAdapter extends BaseAdapter {
         ImageView imageView = view.findViewById(R.id.iv_avatar_user);
         imageView.setImageBitmap(comment.getAuthor().getAvatar());
         imageView.setOnClickListener(v -> {
-            Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://www.vk.com/" + comment.getAuthor().getVkId()));
-            activity.startActivity(browserIntent);
+            if (activity.myProfile.getId() != comment.getAuthor().getId()) {
+                Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://www.vk.com/id" + comment.getAuthor().getVkId()));
+                activity.startActivity(browserIntent);
+            }
         });
         return view;
     }

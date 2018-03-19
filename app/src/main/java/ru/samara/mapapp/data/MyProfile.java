@@ -6,7 +6,7 @@ public class MyProfile extends Profile {
     private String token;
 
     public MyProfile(String name, String lastName, Bitmap avatar, String token, int id) {
-        super(id, name, lastName, avatar, 0);
+        super(id, name, lastName, avatar, 0, 0);
         this.token = token;
     }
 

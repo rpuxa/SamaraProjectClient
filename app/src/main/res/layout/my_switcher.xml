@@ -22,8 +22,7 @@
             android:id="@+id/et_switcher"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:hint="Краткое описание" />
+            android:layout_weight="1" />
 
         <Button
             android:id="@+id/bt_switcher"

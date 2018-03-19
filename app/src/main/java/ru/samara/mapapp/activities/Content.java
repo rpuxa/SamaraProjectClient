@@ -39,11 +39,7 @@ public abstract class Content {
         return parent;
     }
 
-    public ViewGroup getMainGroup() {
-        return mainGroup;
-    }
-
-    public void setMainGroup(ViewGroup mainGroup) {
+    void setMainGroup(ViewGroup mainGroup) {
         this.mainGroup = mainGroup;
     }
 

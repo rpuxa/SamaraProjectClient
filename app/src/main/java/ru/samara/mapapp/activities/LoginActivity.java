@@ -16,6 +16,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Space;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.vk.sdk.VKAccessToken;
 import com.vk.sdk.VKCallback;
@@ -97,7 +98,9 @@ public class LoginActivity extends AppCompatActivity {
             ProfileToken.profileToken.setToken(token);
             startActivity(intent);
             loading.dismiss();
-        } catch (JSONException ignored) {
+        } catch (JSONException e) {
+            ProfileToken.profileToken.token = null;
+            Toast.makeText(this, "Не удалось войти, токен устарел, попробуйте еще раз.", Toast.LENGTH_LONG).show();
         }
     }
 
