@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="5dp"
-    android:background="@drawable/rounded"
+    android:background="@color/grey"
     android:elevation="4dp"
     android:orientation="vertical"
     android:padding="5dp"
@@ -189,18 +189,23 @@
                     android:padding="10dp"
                     android:translationZ="2dp" />
 
-                <Space
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1" />
-
                 <Button
                     android:id="@+id/createButton"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="bottom"
+                    android:layout_margin="5dp"
                     android:layout_weight="0.1"
-                    android:text="Создать" />
+                    android:background="@drawable/rounded"
+                    android:elevation="7dp"
+                    android:text="Создать"
+                    android:translationZ="2dp" />
+
+                <Space
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1" />
+
 
             </LinearLayout>
         </ScrollView>

@@ -1,5 +1,6 @@
 package ru.samara.mapapp.activities.contents;
 
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Typeface;
@@ -8,6 +9,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.IdRes;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.text.InputType;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -22,6 +24,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
+
 import ru.samara.mapapp.R;
 import ru.samara.mapapp.activities.Content;
 import ru.samara.mapapp.activities.MainActivity;
@@ -33,6 +37,7 @@ import ru.samara.mapapp.data.Profile;
 import ru.samara.mapapp.dialogs.DateTimePickerDialog;
 import ru.samara.mapapp.events.Event;
 import ru.samara.mapapp.events.EventType;
+import ru.samara.mapapp.events.EventTypeAdapter;
 import ru.samara.mapapp.qr.IntentIntegrator;
 import ru.samara.mapapp.qr.IntentResult;
 import ru.samara.mapapp.server.Connect;
@@ -48,6 +53,7 @@ public class EventLayoutContent extends Content {
     public static final String EVENT = "event";
     private TabHost tabHost;
     private Event event;
+    private AlertDialog dialog;
 
     @Override
     public void onCreate(MainActivity parent, Intent intent) {
@@ -72,6 +78,7 @@ public class EventLayoutContent extends Content {
         setLayoutEvent();
         setListeners();
         updateComments(0, 100);
+        dialog = createDialog();
     }
 
     private void createTabHost() {
@@ -146,6 +153,10 @@ public class EventLayoutContent extends Content {
                 textView.setTextSize(20);
                 textView.setTypeface(null, Typeface.BOLD);
                 textView.setTextColor(Color.BLACK);
+                textView.setAllCaps(true);
+            }
+            if (ids[i] == R.id.cost_event) {
+                editText.setInputType(InputType.TYPE_CLASS_PHONE);
             }
             textView.setText(texts[i][0]);
             editText.setText(texts[i][1]);
@@ -157,13 +168,31 @@ public class EventLayoutContent extends Content {
                 switcher.showNext();
                 switch (switcher.getId()) {
                     case R.id.name_switcher:
+                        textView.setText(stringEt);
                         event.setName(stringEt);
                         break;
                     case R.id.description_switcher:
+                        textView.setText(stringEt);
                         event.setShortDescription(stringEt);
                         break;
                     case R.id.full_descripion_switcher:
+                        textView.setText(stringEt);
                         event.setLongDescription(stringEt);
+                        break;
+                    case R.id.cost_event:
+                        String s = "";
+                        for (char ch : stringEt.toCharArray()) {
+                            if (Character.isDigit(ch)) s = s + ch;
+                        }
+                        int cost = s.length() > 0 ? Integer.parseInt(s) : 0;
+                        event.setCost(cost);
+                        if (cost == 0) {
+                            s = "Бесплатно";
+                        } else {
+                            s = "Цена " + s;
+                        }
+                        textView.setText(s);
+                        updateEvent(event);
                         break;
                 }
                 updateEvent(event);
@@ -171,7 +200,16 @@ public class EventLayoutContent extends Content {
             switcher.setOnLongClickListener(v -> {
                 if (canEdit) {
                     String textTW = textView.getText().toString();
+                    if (switcher.getId() == R.id.cost_event) {
+                        String s = "";
+                        for (char ch : textTW.toCharArray()) {
+                            if (Character.isDigit(ch)) s = s + ch;
+                        }
+                        textTW = s;
+                    }
                     switcher.showNext();
+
+
                     editText.setText(textTW);
                 } else getParent().sendToast("Вы не можете редактировать это мероприятие!", true);
                 return true;
@@ -213,10 +251,12 @@ public class EventLayoutContent extends Content {
         String dateString = "Дата: " + event.getStringDate();
         tvDate.setText(dateString);
         tvDate.setOnLongClickListener(v -> {
-            new DateTimePickerDialog(getParent(), timeUNIX -> {
-                String dateString0 = "Дата: " + DateUtils.dateToString(timeUNIX);
-                tvDate.setText(dateString0);
-            }).show();
+            if (canEdit) {
+                new DateTimePickerDialog(getParent(), timeUNIX -> {
+                    String dateString0 = "Дата: " + DateUtils.dateToString(timeUNIX);
+                    tvDate.setText(dateString0);
+                }).show();
+            } else getParent().sendToast("Вы не можете редактировать это мероприятие!", true);
             return false;
         });
         SwipeRefreshLayout swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipe_chat);
@@ -230,10 +270,10 @@ public class EventLayoutContent extends Content {
         findViewById(R.id.event_layout_qr_read_button).setOnClickListener(view -> {
             QRActivity.read(getParent());
         });
-/*findViewById(R.id.icon_event).setOnLongClickListener(v -> {
-
-    return false;
-});*/
+        findViewById(R.id.icon_event).setOnLongClickListener(v -> {
+            dialog.show();
+            return false;
+        });
     }
 
     @Override
@@ -314,5 +354,29 @@ public class EventLayoutContent extends Content {
     @Override
     public int layout() {
         return R.layout.event_layout;
+    }
+
+    private AlertDialog createDialog() {
+        AlertDialog.Builder ad = new AlertDialog.Builder(getParent());
+        View mainView = getParent().getLayoutInflater().inflate(R.layout.event_types_layout, null);
+        ListView listView = mainView.findViewById(R.id.list_types);
+        EventTypeAdapter adapter = new EventTypeAdapter(getParent());
+        listView.setAdapter(adapter);
+
+        for (int id : EventType.ids) {
+            EventType type = EventType.types.get(id);
+            adapter.addType(type);
+        }
+        ad.setTitle("Виды меропприятий")
+                .setView(mainView)
+                .setCancelable(true);
+        AlertDialog dialog = ad.create();
+        listView.setOnItemClickListener((parent, view, position, id) -> {
+            event.setTypeId(adapter.getType(position).getId());
+            updateEvent(event);
+            dialog.cancel();
+            ((ImageView) findViewById(R.id.icon_event)).setImageResource(adapter.getType(position).getIcon());
+        });
+        return dialog;
     }
 }

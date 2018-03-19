@@ -3,7 +3,9 @@ package ru.samara.mapapp.events;
 import android.support.annotation.IdRes;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import ru.samara.mapapp.R;
 
@@ -16,6 +18,7 @@ import static ru.samara.mapapp.events.EventType.Types.SPORT;
 public class EventType {
     private int id;
     private String name;
+
     @IdRes
     private int icon;
 
@@ -26,6 +29,7 @@ public class EventType {
     }
 
     public static final Map<Integer, EventType> types = new HashMap<>();
+    public static final Set<Integer> ids = new HashSet<>();
 
     static {
         EventType array[] = {
@@ -35,8 +39,10 @@ public class EventType {
                 new EventType(SALES, "Скидки", R.drawable.sales),
                 new EventType(CINEMA, "Кино", R.drawable.cinema)
         };
-        for (EventType type : array)
+        for (EventType type : array) {
             types.put(type.id, type);
+            ids.add(type.id);
+        }
     }
 
 
