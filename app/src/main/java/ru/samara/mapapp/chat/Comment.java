@@ -2,7 +2,6 @@ package ru.samara.mapapp.chat;
 
 
 import android.app.Activity;
-import android.content.Context;
 import android.widget.BaseAdapter;
 
 import ru.samara.mapapp.data.Profile;
@@ -28,7 +27,7 @@ public class Comment {
     }
 
     public void loadProfile(Activity activity, BaseAdapter adapter) {
-        author = ProfileBase.base.get(userId, activity, bitmap -> {
+        author = ProfileBase.instance.get(userId, activity, bitmap -> {
             getAuthor().setAvatar(bitmap);
             activity.runOnUiThread(adapter::notifyDataSetChanged);
         });

@@ -6,13 +6,11 @@ import java.util.HashMap;
 
 import ru.samara.mapapp.cache.Conservation;
 import ru.samara.mapapp.cache.Conserved;
-import ru.samara.mapapp.cache.Singleton;
 import ru.samara.mapapp.utils.DownloadImageTask;
 
 public class ProfileBase extends HashMap<Integer, Profile> implements Conserved {
 
-    @Singleton
-    public static ProfileBase base = new ProfileBase();
+    public static ProfileBase instance = new ProfileBase();
 
     static {
         Conservation.addConservedClass(ProfileBase.class);

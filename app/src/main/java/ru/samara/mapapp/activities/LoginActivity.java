@@ -30,7 +30,6 @@ import org.json.JSONObject;
 import ru.samara.mapapp.R;
 import ru.samara.mapapp.cache.Conservation;
 import ru.samara.mapapp.cache.Conserved;
-import ru.samara.mapapp.cache.Singleton;
 import ru.samara.mapapp.server.Connect;
 import ru.samara.mapapp.utils.DownloadImageTask;
 
@@ -48,8 +47,8 @@ public class LoginActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.login_activity);
-        if (ProfileToken.profileToken.token != null)
-            logIn(ProfileToken.profileToken.token);
+        if (ProfileToken.instance.token != null)
+            logIn(ProfileToken.instance.token);
         setDesign();
     }
 
@@ -95,11 +94,11 @@ public class LoginActivity extends AppCompatActivity {
             intent.putExtra(TOKEN, object.getString("token"));
             String id = object.getString("main_id");
             intent.putExtra(MAIN_ID, Integer.parseInt(id));
-            ProfileToken.profileToken.setToken(token);
+            ProfileToken.instance.setToken(token);
             startActivity(intent);
             loading.dismiss();
         } catch (JSONException e) {
-            ProfileToken.profileToken.token = null;
+            ProfileToken.instance.token = null;
             Toast.makeText(this, "Не удалось войти, токен устарел, попробуйте еще раз.", Toast.LENGTH_LONG).show();
         }
     }
@@ -174,8 +173,8 @@ public class LoginActivity extends AppCompatActivity {
 }
 
 class ProfileToken implements Conserved {
-    @Singleton
-    public static ProfileToken profileToken = new ProfileToken();
+
+    public static ProfileToken instance = new ProfileToken();
 
     static {
         Conservation.addConservedClass(ProfileToken.class);

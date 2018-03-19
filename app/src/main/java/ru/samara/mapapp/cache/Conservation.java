@@ -45,7 +45,7 @@ public class Conservation {
 
     private Field getAnnotationFiled(Class conserved) {
         for (Field field : conserved.getFields()) {
-            if (field.getAnnotation(Singleton.class) != null) {
+            if (field.getName().equalsIgnoreCase("instance") && field.getDeclaringClass().getName().equalsIgnoreCase(conserved.getName())) {
                 return field;
             }
         }
