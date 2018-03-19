@@ -1,6 +1,10 @@
 package ru.samara.mapapp.events;
 
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
+import android.support.v4.app.NotificationCompat;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -18,6 +22,7 @@ import ru.samara.mapapp.activities.contents.EventLayoutContent;
 import ru.samara.mapapp.utils.DateUtils;
 
 public class Event implements Serializable {
+    private static final int NOTIFY_ID = 101;
     private int id;
     private Integer typeId;
     private EventType type;
@@ -42,6 +47,33 @@ public class Event implements Serializable {
         this.ownerId = ownerId;
         type = EventType.getById(typeId);
         view = makeView(parent, activity);
+        createNotification(activity);
+    }
+
+    private void createNotification(MainActivity activity) {
+        Intent notificationIntent = new Intent(activity, MainActivity.class);
+        PendingIntent contentIntent = PendingIntent.getActivity(activity,
+                0, notificationIntent,
+                PendingIntent.FLAG_CANCEL_CURRENT);
+
+
+
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(activity);
+
+        builder.setContentIntent(contentIntent)
+                // обязательные настройки
+                .setSmallIcon(EventType.getById(getTypeId()).getIcon())
+                .setContentTitle("Напоминание")
+                .setContentText("Скоро будет '" + getName() + "'") // Текст уведомления
+                // необязательные настройки
+                .setWhen(getTime())
+                .setAutoCancel(true); // автоматически закрыть уведомление после нажатия
+
+        NotificationManager notificationManager =
+                (NotificationManager) activity.getSystemService(Context.NOTIFICATION_SERVICE);
+
+        assert notificationManager != null;
+        notificationManager.notify(NOTIFY_ID, builder.build());
     }
 
     private View makeView(ViewGroup parent, MainActivity activity) {
