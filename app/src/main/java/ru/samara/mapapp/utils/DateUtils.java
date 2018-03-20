@@ -12,7 +12,6 @@ public final class DateUtils {
     }
 
     public static String dateToString(GregorianCalendar calendar) {
-
         return printZero(calendar.get(Calendar.HOUR_OF_DAY))
                 + ":" +
                 printZero(calendar.get(Calendar.MINUTE))

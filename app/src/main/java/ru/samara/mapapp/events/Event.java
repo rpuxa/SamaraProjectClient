@@ -16,6 +16,7 @@ import java.io.Serializable;
 import java.util.GregorianCalendar;
 
 import ru.samara.mapapp.R;
+import ru.samara.mapapp.activities.LoginActivity;
 import ru.samara.mapapp.activities.MainActivity;
 import ru.samara.mapapp.activities.MapActivity;
 import ru.samara.mapapp.activities.contents.EventLayoutContent;
@@ -30,7 +31,6 @@ public class Event implements Serializable {
     private String name, shortDescription, longDescription;
     private GregorianCalendar date;
     private int cost;
-
     private View view;
     private int ownerId;
 
@@ -51,11 +51,10 @@ public class Event implements Serializable {
     }
 
     private void createNotification(MainActivity activity) {
-        Intent notificationIntent = new Intent(activity, MainActivity.class);
+        Intent notificationIntent = new Intent(activity, LoginActivity.class);
         PendingIntent contentIntent = PendingIntent.getActivity(activity,
                 0, notificationIntent,
                 PendingIntent.FLAG_CANCEL_CURRENT);
-
 
 
         NotificationCompat.Builder builder = new NotificationCompat.Builder(activity);
@@ -66,7 +65,7 @@ public class Event implements Serializable {
                 .setContentTitle("Напоминание")
                 .setContentText("Скоро будет '" + getName() + "'") // Текст уведомления
                 // необязательные настройки
-                .setWhen(getTime())
+                .setWhen(getTime() * 1000)
                 .setAutoCancel(true); // автоматически закрыть уведомление после нажатия
 
         NotificationManager notificationManager =
@@ -79,8 +78,10 @@ public class Event implements Serializable {
     private View makeView(ViewGroup parent, MainActivity activity) {
         View view = activity.getLayoutInflater().inflate(R.layout.event_example, parent, false);
         ((ImageView) view.findViewById(R.id.eventIcon)).setImageResource(type.getIcon());
-        ((TextView) view.findViewById(R.id.eventName)).setText(name);
-        String dateSt = "Дата проведения: " + getStringDate();
+        TextView twName = view.findViewById(R.id.eventName);
+        twName.setText(name);
+        twName.setAllCaps(true);
+        String dateSt = "Дата: " + getStringDate();
         ((TextView) view.findViewById(R.id.eventDate)).setText(dateSt);
         ((TextView) view.findViewById(R.id.eventShortDescription)).setText(shortDescription);
         view.findViewById(R.id.eventOpenMap).setOnClickListener(v -> MapActivity.gotoLocation(activity, location));

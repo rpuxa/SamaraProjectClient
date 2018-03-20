@@ -79,6 +79,7 @@ public class EventSearchContent extends Content {
             updateEvents();
             swipeRefreshLayout.setRefreshing(false);
         }, 0));
+
     }
 
     private AlertDialog createDialog() {

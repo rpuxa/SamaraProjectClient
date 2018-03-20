@@ -4,70 +4,89 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:background="@drawable/rounded"
+    android:gravity="center"
+    android:orientation="vertical"
     android:padding="10dp"
     android:paddingBottom="10dp"
     android:paddingTop="10dp"
-    android:layout_margin="5dp"
-    android:background="@drawable/rounded"
     tools:context="ru.samara.mapapp.activities.MainActivity">
 
 
-    <LinearLayout
-        android:id="@+id/event_touch_layout"
+    <TextView
+        android:id="@+id/eventName"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="16dp"
+        android:layout_gravity="center"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:padding="3dp"
+        android:text="Name"
+        android:textColor="@color/common_google_signin_btn_text_dark_focused"
+        android:textSize="24sp" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:layout_weight="1"
         android:orientation="horizontal"
-        tools:layout_editor_absoluteX="10dp"
-        tools:layout_editor_absoluteY="9dp">
-
-        <ImageView
-            android:id="@+id/eventIcon"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_marginRight="16dp"
-            android:layout_weight="0"
-            app:srcCompat="@drawable/sport" />
+        android:padding="5dp">
 
         <LinearLayout
-            android:layout_width="wrap_content"
+            android:id="@+id/event_touch_layout"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginEnd="16dp"
             android:layout_weight="1"
-            android:orientation="vertical">
+            android:orientation="horizontal"
+            tools:layout_editor_absoluteX="10dp"
+            tools:layout_editor_absoluteY="9dp">
 
-            <TextView
-                android:id="@+id/eventName"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Name"
-                android:textColor="@color/common_google_signin_btn_text_dark_focused"
-                android:textSize="24sp" />
+            <ImageView
+                android:id="@+id/eventIcon"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_gravity="center"
+                android:layout_marginRight="16dp"
+                android:layout_weight="0"
+                app:srcCompat="@drawable/sport" />
 
-            <TextView
-                android:id="@+id/eventDate"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="date" />
-
-            <TextView
-                android:id="@+id/eventShortDescription"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="description asdasdasdasdasdasdddddddddddddddddddddddddddddddddddddddasd" />
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/eventDate"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="2dp"
+                    android:layout_weight="1"
+                    android:padding="3dp"
+                    android:text="date" />
+
+                <TextView
+                    android:id="@+id/eventShortDescription"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="2dp"
+                    android:layout_weight="1"
+                    android:padding="3dp"
+                    android:text="description asdasdasdasdasdasdddddddddddddddddddddddddddddddddddddddasd" />
+
+            </LinearLayout>
 
         </LinearLayout>
 
+        <ImageView
+            android:id="@+id/eventOpenMap"
+            android:layout_width="100dp"
+            android:layout_height="40dp"
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            app:srcCompat="@drawable/google_maps_icon" />
     </LinearLayout>
-
-    <ImageView
-        android:id="@+id/eventOpenMap"
-        android:layout_width="500dp"
-        android:layout_height="match_parent"
-        android:layout_gravity="center"
-        android:layout_weight="8"
-        app:srcCompat="@drawable/google_maps_icon" />
 
 </LinearLayout>

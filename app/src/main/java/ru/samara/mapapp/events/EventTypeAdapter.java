@@ -66,6 +66,7 @@ public class EventTypeAdapter extends BaseAdapter {
             view = inflater.inflate(R.layout.item_type_layout, parent, false);
         }
         EventType type = getType(position);
+
         ((TextView) view.findViewById(R.id.event_type_name)).setText(type.getName());
         ((ImageView) view.findViewById(R.id.event_type_icon)).setImageResource(type.getIcon());
         return view;

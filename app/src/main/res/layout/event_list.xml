@@ -50,8 +50,8 @@
             android:id="@+id/mainEventList"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:divider="@color/grey"
-            android:dividerHeight="1dp"
+            android:divider="@color/darkGrey"
+            android:dividerHeight="2dp"
             android:elevation="4dp"
             android:scrollbars="horizontal|vertical"
             android:translationZ="2dp" />

@@ -13,6 +13,7 @@ import android.text.InputType;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TabHost;
 import android.widget.TextView;
@@ -76,7 +77,7 @@ public class EventLayoutContent extends Content {
         setLayoutEvent();
         setListeners();
         updateComments(0, 100);
-        dialog = createDialog();
+        dialog = createTypesDialog();
     }
 
     private void createTabHost() {
@@ -249,6 +250,12 @@ public class EventLayoutContent extends Content {
                 dialog.show();
                 return false;
             });
+
+
+            findViewById(R.id.event_delete).setVisibility(View.VISIBLE);
+            findViewById(R.id.event_button_delete).setOnClickListener(view -> {
+                createRemoveDialog().show();
+            });
         }
         TextView tvDate = (TextView) findViewById(R.id.event_tv_date);
         String dateString = "Дата: " + event.getStringDate();
@@ -351,7 +358,13 @@ public class EventLayoutContent extends Content {
         return R.layout.event_layout;
     }
 
-    private AlertDialog createDialog() {
+
+    private void removeEvent(Event event) {
+
+
+    }
+
+    private AlertDialog createTypesDialog() {
         AlertDialog.Builder ad = new AlertDialog.Builder(getParent());
         View mainView = getParent().getLayoutInflater().inflate(R.layout.event_types_layout, null);
         ListView listView = mainView.findViewById(R.id.list_types);
@@ -374,4 +387,20 @@ public class EventLayoutContent extends Content {
         });
         return dialog;
     }
+
+    private AlertDialog createRemoveDialog() {
+        AlertDialog.Builder ad = new AlertDialog.Builder(getParent());
+        ad.setTitle("Удаление")
+                .setMessage("Вы дейтсвительно хоитите удалить мероприятия?")
+                .setPositiveButton("ДА", (dialog, which) -> {
+                    removeEvent(event);
+                    dialog.cancel();
+                })
+                .setNegativeButton("Назад", (dialog, which) -> {
+                    dialog.cancel();
+                })
+                .setCancelable(true);
+        return ad.create();
+    }
+
 }
