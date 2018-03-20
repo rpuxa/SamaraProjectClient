@@ -83,51 +83,52 @@ public class CreateEventContent extends Content {
     }
 
     private void createEvent() {
-        String name = ((EditText) findViewById(R.id.newEventName)).getText().toString();
-        String shortDescription = ((EditText) findViewById(R.id.newEventShortDescription)).getText().toString();
-        String longDescription = ((EditText) findViewById(R.id.newEventLongDescription)).getText().toString();
-        Integer type = typeSelected;
-        String costString =((EditText) findViewById(R.id.newEventCost)).getText().toString();
-        int cost = costString.isEmpty() ? 0 : Integer.parseInt(costString);
-        if (name.length() < 5 || name.length() > 20) {
-            getParent().sendToast("Неверное кол-во символов у названия", true);
-            return;
-        }
-        if (shortDescription.length() < 0 || shortDescription.length() > 100) {
-            getParent().sendToast("Неверное кол-во символов у краткого описания", true);
-            return;
-        }
-        if (longDescription.length() < 0 || longDescription.length() > 1000) {
-            getParent().sendToast("Неверное кол-во символов у полного описания", true);
-            return;
-        }
-        if (timeSelected == null) {
-            getParent().sendToast("Установите дату проведения", true);
-        }
-        if (locationSelected == null) {
-            getParent().sendToast("Установите место проведения", true);
-        }
-
-
-        String answer = Connect.send("addevent",
-                "main_id", String.valueOf(getParent().myProfile.getId()),
-                "token", getParent().myProfile.getToken(),
-                "request", "{" +
-                        "\"name\":\"" + name + "\"," +
-                        "\"time\":" + timeSelected + "," +
-                        "\"longitude\":\"" + ((float) locationSelected.longitude) + "\"," +
-                        "\"latitude\":\"" + ((float) locationSelected.latitude) + "\"," +
-                        "\"s_description\":\"" + shortDescription + "\"," +
-                        "\"l_description\":\"" + longDescription + "\"," +
-                        "\"cost\":" + cost + "," +
-                        "\"type\":" + type +
-                        "}"
-        );
         try {
+            String name = ((EditText) findViewById(R.id.newEventName)).getText().toString();
+            String shortDescription = ((EditText) findViewById(R.id.newEventShortDescription)).getText().toString();
+            String longDescription = ((EditText) findViewById(R.id.newEventLongDescription)).getText().toString();
+            Integer type = typeSelected;
+            String costString = ((EditText) findViewById(R.id.newEventCost)).getText().toString();
+            int cost = costString.isEmpty() ? 0 : Integer.parseInt(costString);
+            if (name.length() < 5 || name.length() > 20) {
+                getParent().sendToast("Неверное кол-во символов у названия", true);
+                return;
+            }
+            if (shortDescription.length() < 0 || shortDescription.length() > 100) {
+                getParent().sendToast("Неверное кол-во символов у краткого описания", true);
+                return;
+            }
+            if (longDescription.length() < 0 || longDescription.length() > 1000) {
+                getParent().sendToast("Неверное кол-во символов у полного описания", true);
+                return;
+            }
+            if (timeSelected == null) {
+                getParent().sendToast("Установите дату проведения", true);
+            }
+            if (locationSelected == null) {
+                getParent().sendToast("Установите место проведения", true);
+            }
+
+
+            String answer = Connect.send("addevent",
+                    "main_id", String.valueOf(getParent().myProfile.getId()),
+                    "token", getParent().myProfile.getToken(),
+                    "request", "{" +
+                            "\"name\":\"" + name + "\"," +
+                            "\"time\":" + timeSelected + "," +
+                            "\"time_end\":" + (timeSelected + 3600) + "," +
+                            "\"longitude\":\"" + ((float) locationSelected.longitude) + "\"," +
+                            "\"latitude\":\"" + ((float) locationSelected.latitude) + "\"," +
+                            "\"s_description\":\"" + shortDescription + "\"," +
+                            "\"l_description\":\"" + longDescription + "\"," +
+                            "\"cost\":" + cost + "," +
+                            "\"type\":" + type +
+                            "}"
+            );
             Integer.parseInt(answer);
             getParent().sendToast("Событие успешно добавлено!", false);
             getParent().startContent(EventSearchContent.class);
-        } catch (Exception e) {
+        } catch (Throwable e) {
             getParent().sendToast("Ошибка в создании события", false);
         }
     }

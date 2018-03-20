@@ -24,7 +24,6 @@ import com.vk.sdk.VKScope;
 import com.vk.sdk.VKSdk;
 import com.vk.sdk.api.VKError;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import ru.samara.mapapp.R;
@@ -97,7 +96,7 @@ public class LoginActivity extends AppCompatActivity {
             ProfileToken.instance.setToken(token);
             startActivity(intent);
             loading.dismiss();
-        } catch (JSONException e) {
+        } catch (Exception e) {
             ProfileToken.instance.token = null;
             Toast.makeText(this, "Не удалось войти, токен устарел, попробуйте еще раз.", Toast.LENGTH_LONG).show();
         }

@@ -2,7 +2,6 @@ package ru.samara.mapapp.server;
 
 import android.os.AsyncTask;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -76,11 +75,4 @@ public final class Connect extends AsyncTask<String, Void, String> {
         }
     }
 
-    public static JSONArray sendToJSONArray(String... args) {
-        try {
-            return new JSONArray(send(args));
-        } catch (JSONException e) {
-            throw new RuntimeException(e.getMessage());
-        }
-    }
 }

@@ -24,8 +24,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.ArrayList;
-
 import ru.samara.mapapp.R;
 import ru.samara.mapapp.activities.Content;
 import ru.samara.mapapp.activities.MainActivity;
@@ -180,18 +178,18 @@ public class EventLayoutContent extends Content {
                         event.setLongDescription(stringEt);
                         break;
                     case R.id.cost_event:
-                        String s = "";
+                        StringBuilder s = new StringBuilder();
                         for (char ch : stringEt.toCharArray()) {
-                            if (Character.isDigit(ch)) s = s + ch;
+                            if (Character.isDigit(ch)) s.append(ch);
                         }
-                        int cost = s.length() > 0 ? Integer.parseInt(s) : 0;
+                        int cost = s.length() > 0 ? Integer.parseInt(s.toString()) : 0;
                         event.setCost(cost);
                         if (cost == 0) {
-                            s = "Бесплатно";
+                            s = new StringBuilder("Бесплатно");
                         } else {
-                            s = "Цена " + s;
+                            s.insert(0, "Цена ");
                         }
-                        textView.setText(s);
+                        textView.setText(s.toString());
                         updateEvent(event);
                         break;
                 }
@@ -242,11 +240,16 @@ public class EventLayoutContent extends Content {
         location.setOnClickListener(v ->
                 MapActivity.gotoLocation(getParent(), event.getLocation())
         );
-        if (canEdit)
+        if (canEdit) {
             location.setOnLongClickListener(view -> {
                 MapActivity.getLocation(getParent());
                 return true;
             });
+            findViewById(R.id.icon_event).setOnLongClickListener(v -> {
+                dialog.show();
+                return false;
+            });
+        }
         TextView tvDate = (TextView) findViewById(R.id.event_tv_date);
         String dateString = "Дата: " + event.getStringDate();
         tvDate.setText(dateString);
@@ -270,10 +273,6 @@ public class EventLayoutContent extends Content {
         findViewById(R.id.event_layout_qr_read_button).setOnClickListener(view -> {
             QRActivity.read(getParent());
         });
-        findViewById(R.id.icon_event).setOnLongClickListener(v -> {
-            dialog.show();
-            return false;
-        });
     }
 
     @Override
@@ -292,15 +291,11 @@ public class EventLayoutContent extends Content {
                         "token", getParent().myProfile.getToken(),
                         "qr_token", code
                 );
-                getParent().sendToast(obj.toString(), false);
-                switch (obj.getString("status").toUpperCase()) {
-                    case "OK":
-                        getParent().sendToast("Пользователь зачекинен!", false);
-                        break;
-                    case "ERROR":
-                        getParent().sendToast("Ошибка чтения QR", false);
-                        break;
-                }
+                if (obj.getString("status").equalsIgnoreCase("ok")) {
+                    getParent().sendToast("Пользователь зачекинен!", false);
+                } else
+                    getParent().sendToast("Ошибка чтения QR", false);
+
             } catch (JSONException e) {
                 e.printStackTrace();
             }

@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Handler;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -52,7 +54,23 @@ public class EventSearchContent extends Content {
 
     private void setListeners() {
         findViewById(R.id.settings).setOnClickListener(v -> dialog.show());
-        findViewById(R.id.search).setOnClickListener(v -> list.notifyDataSetChanged());
+        EditText searchBar = (EditText) findViewById(R.id.searchBar);
+        searchBar.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                list.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+        });
         SwipeRefreshLayout swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipe_refresher);
         swipeRefreshLayout.setColorSchemeResources(R.color.mainColor);
         swipeRefreshLayout.setColorSchemeColors(Color.LTGRAY, Color.GRAY);
@@ -88,7 +106,7 @@ public class EventSearchContent extends Content {
     private void updateEvents() {
         try {
             list.removeAllEvents();
-            JSONArray array = (JSONArray) Connect.sendToJSONObject("showallevents").get("events");
+            JSONArray array = Connect.sendToJSONObject("showallevents").getJSONArray("events");
             for (int i = 0; i < array.length(); i++) {
                 JSONObject object = array.getJSONObject(i);
                 list.addEvent(
