@@ -18,7 +18,7 @@ public final class DateUtils {
                 + " " +
                 printZero(calendar.get(Calendar.DAY_OF_MONTH))
                 + "." +
-                printZero(calendar.get(Calendar.MONTH))
+                printZero(calendar.get(Calendar.MONTH) + 1)
                 + "." +
                 calendar.get(Calendar.YEAR);
     }

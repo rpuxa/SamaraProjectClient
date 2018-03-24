@@ -11,6 +11,7 @@ import android.widget.TextView;
 import com.google.android.gms.maps.model.LatLng;
 
 import java.util.ArrayList;
+import java.util.GregorianCalendar;
 
 import ru.samara.mapapp.R;
 import ru.samara.mapapp.activities.Content;
@@ -18,6 +19,7 @@ import ru.samara.mapapp.activities.MainActivity;
 import ru.samara.mapapp.activities.MapActivity;
 import ru.samara.mapapp.dialogs.DateTimePickerDialog;
 import ru.samara.mapapp.dialogs.DateTimePickerDialogListener;
+import ru.samara.mapapp.events.Event;
 import ru.samara.mapapp.events.EventType;
 import ru.samara.mapapp.server.Connect;
 import ru.samara.mapapp.utils.DateUtils;
@@ -90,25 +92,11 @@ public class CreateEventContent extends Content {
             Integer type = typeSelected;
             String costString = ((EditText) findViewById(R.id.newEventCost)).getText().toString();
             int cost = costString.isEmpty() ? 0 : Integer.parseInt(costString);
-            if (name.length() < 5 || name.length() > 20) {
-                getParent().sendToast("Неверное кол-во символов у названия", true);
-                return;
-            }
-            if (shortDescription.length() < 0 || shortDescription.length() > 100) {
-                getParent().sendToast("Неверное кол-во символов у краткого описания", true);
-                return;
-            }
-            if (longDescription.length() < 0 || longDescription.length() > 1000) {
-                getParent().sendToast("Неверное кол-во символов у полного описания", true);
-                return;
-            }
-            if (timeSelected == null) {
-                getParent().sendToast("Установите дату проведения", true);
-            }
-            if (locationSelected == null) {
-                getParent().sendToast("Установите место проведения", true);
-            }
 
+            Event event = new Event(0, type, locationSelected, name, shortDescription, longDescription,
+                    DateUtils.timeToCalendar(timeSelected), cost, 65432,0 ,0, null, getParent());
+
+            if (!event.checkEvent()) return;
 
             String answer = Connect.send("addevent",
                     "main_id", String.valueOf(getParent().myProfile.getId()),
@@ -132,5 +120,6 @@ public class CreateEventContent extends Content {
             getParent().sendToast("Ошибка в создании события", false);
         }
     }
+
 
 }

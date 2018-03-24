@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.support.v4.app.NotificationCompat;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -33,9 +34,12 @@ public class Event implements Serializable {
     private int cost;
     private View view;
     private int ownerId;
+    private int rating;
+    private int peopleCount;
+    private MainActivity activity;
 
     public Event(int id, Integer typeId, LatLng location, String name, String shortDescription, String longDescription,
-                 GregorianCalendar date, int cost, int ownerId, ViewGroup parent, MainActivity activity) {
+                 GregorianCalendar date, int cost, int ownerId, int peopleCount, int rating, ViewGroup parent, MainActivity activity) {
         this.id = id;
         this.typeId = typeId;
         this.location = location;
@@ -45,10 +49,14 @@ public class Event implements Serializable {
         this.cost = cost;
         this.longDescription = longDescription;
         this.ownerId = ownerId;
+        this.activity = activity;
+        this.rating = rating;
+        this.peopleCount = peopleCount;
         type = EventType.getById(typeId);
         view = makeView(parent, activity);
         createNotification(activity);
     }
+
 
     private void createNotification(MainActivity activity) {
         Intent notificationIntent = new Intent(activity, LoginActivity.class);
@@ -60,13 +68,11 @@ public class Event implements Serializable {
         NotificationCompat.Builder builder = new NotificationCompat.Builder(activity);
 
         builder.setContentIntent(contentIntent)
-                // обязательные настройки
                 .setSmallIcon(EventType.getById(getTypeId()).getIcon())
                 .setContentTitle("Напоминание")
                 .setContentText("Скоро будет '" + getName() + "'") // Текст уведомления
-                // необязательные настройки
                 .setWhen(getTime() * 1000)
-                .setAutoCancel(true); // автоматически закрыть уведомление после нажатия
+                .setAutoCancel(true);
 
         NotificationManager notificationManager =
                 (NotificationManager) activity.getSystemService(Context.NOTIFICATION_SERVICE);
@@ -176,5 +182,45 @@ public class Event implements Serializable {
 
     public long getTime() {
         return date.getTimeInMillis() / 1000;
+    }
+
+    public boolean checkEvent() {
+        if (name.length() < 5 || name.length() > 20) {
+            activity.sendToast("Неверное кол-во символов у названия", true);
+            return false;
+        }
+        if (shortDescription.length() < 0 || shortDescription.length() > 100) {
+            activity.sendToast("Неверное кол-во символов у краткого описания", true);
+            return false;
+        }
+        if (longDescription.length() < 0 || longDescription.length() > 1000) {
+            activity.sendToast("Неверное кол-во символов у полного описания", true);
+            return false;
+        }
+
+        if (date == null) {
+            activity.sendToast("Установите дату проведения", true);
+            return false;
+        }
+
+        if (getTime() <= System.currentTimeMillis() / 1000) {
+            activity.sendToast("Дата проведения должна быть позже настоящего времени", true);
+            return false;
+        }
+
+        if (location == null) {
+            activity.sendToast("Установите место проведения", true);
+            return false;
+        }
+
+        return true;
+    }
+
+    public int getRating() {
+        return rating;
+    }
+
+    public int getPeopleCount() {
+        return peopleCount;
     }
 }

@@ -108,8 +108,11 @@ public class EventSearchContent extends Content {
         try {
             list.removeAllEvents();
             JSONArray array = Connect.sendToJSONObject("showallevents").getJSONArray("events");
+            long time = System.currentTimeMillis() / 1000;
             for (int i = 0; i < array.length(); i++) {
                 JSONObject object = array.getJSONObject(i);
+                long eventTime = object.getLong("time");
+                boolean past = eventTime < time;
                 list.addEvent(
                         object.getInt("id"),
                         object.getInt("type"),
@@ -120,14 +123,17 @@ public class EventSearchContent extends Content {
                         object.getString("name"),
                         object.getString("s_description"),
                         object.getString("l_description"),
-                        DateUtils.timeToCalendar(object.getLong("time")),
+                        DateUtils.timeToCalendar(eventTime),
                         object.getInt("cost"),
-                        object.getInt("main_id")
+                        object.getInt("main_id"),
+                        object.getInt(past ? "pa_reputation" : "fu_reputation"),
+                        object.getInt(past ? "pa_count" : "fu_count")
                 );
             }
             list.notifyDataSetChanged();
         } catch (JSONException e) {
             e.printStackTrace();
+
         }
     }
 

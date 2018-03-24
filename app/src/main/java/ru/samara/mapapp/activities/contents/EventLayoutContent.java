@@ -122,6 +122,26 @@ public class EventLayoutContent extends Content {
             return;
         int type = event.getTypeId();
         EventType t = EventType.getById(type);
+        ((TextView) findViewById(R.id.rating)).setText(String.valueOf(event.getRating()));
+        if (!canEdit)
+            findViewById(R.id.count_people).setOnClickListener(v -> {
+                try {
+                    JSONObject obj = Connect.sendToJSONObject("change_count",
+                            "id", String.valueOf(getParent().myProfile.getId()),
+                            "token", getParent().myProfile.getToken(),
+                            "event_id", String.valueOf(event.getId())
+                    );
+                    String status = obj.getString("status");
+                    ((TextView) v).setText(String.valueOf(Integer.parseInt(((TextView) v).getText().toString())
+                            + (status.equalsIgnoreCase("ADD") ? 1 : -1)
+                    ));
+                    ((TextView) findViewById(R.id.rating)).setText(String.valueOf(obj.getInt("rating")));
+                    getParent().sendToast((status.equalsIgnoreCase("ADD") ? "Вы подписались" : "Вы отписались"), true);
+                } catch (Throwable e) {
+                    // getParent().sendToast("Вы подписались", true);
+                }
+            });
+        ((TextView) findViewById(R.id.count_people)).setText(String.valueOf(event.getPeopleCount()));
         ((ImageView) findViewById(R.id.icon_event)).setImageResource(t.getIcon());
         ImageView organizerAvatar = ((ImageView) findViewById(R.id.org_avatar));
         Profile organizer = Profile.getProfileById(getParent(), event.getOwnerId(), bitmap -> {
@@ -152,7 +172,6 @@ public class EventLayoutContent extends Content {
                 textView.setTextSize(20);
                 textView.setTypeface(null, Typeface.BOLD);
                 textView.setTextColor(Color.BLACK);
-                textView.setAllCaps(true);
             }
             if (ids[i] == R.id.cost_event) {
                 editText.setInputType(InputType.TYPE_CLASS_PHONE);
@@ -200,11 +219,11 @@ public class EventLayoutContent extends Content {
                 if (canEdit) {
                     String textTW = textView.getText().toString();
                     if (switcher.getId() == R.id.cost_event) {
-                        String s = "";
+                        StringBuilder s = new StringBuilder();
                         for (char ch : textTW.toCharArray()) {
-                            if (Character.isDigit(ch)) s = s + ch;
+                            if (Character.isDigit(ch)) s.append(ch);
                         }
-                        textTW = s;
+                        textTW = s.toString();
                     }
                     switcher.showNext();
 
@@ -301,9 +320,9 @@ public class EventLayoutContent extends Content {
                 if (obj.getString("status").equalsIgnoreCase("ok")) {
                     getParent().sendToast("Пользователь зачекинен!", false);
                 } else
-                    getParent().sendToast("Ошибка чтения QR", false);
-
-            } catch (JSONException e) {
+                    throw new Exception();
+            } catch (Exception e) {
+                getParent().sendToast("Ошибка чтения QR", false);
                 e.printStackTrace();
             }
         }
@@ -315,33 +334,30 @@ public class EventLayoutContent extends Content {
     }
 
     private void updateEvent(Event event) {
-        String name = event.getName();
-        String shortDescription = event.getShortDescription();
-        String longDescription = event.getLongDescription();
-        if (name.length() < 5 || name.length() > 20) {
-            getParent().sendToast("Неверное кол-во символов у названия", true);
-            return;
+        try {
+            if (!event.checkEvent())
+                throw new Exception();
+
+            String answer = Connect.send("event_edit",
+                    "id", String.valueOf(event.getId()),
+                    "name", event.getName(),
+                    "longitude", String.valueOf(event.getLocation().longitude),
+                    "latitude", String.valueOf(event.getLocation().latitude),
+                    "s_description", event.getShortDescription(),
+                    "l_description", event.getLongDescription(),
+                    "type", String.valueOf(event.getTypeId()),
+                    "cost", String.valueOf(event.getCost()),
+                    "time", String.valueOf(event.getTime()),
+                    "token", getParent().myProfile.getToken()
+            );
+            if (!answer.equalsIgnoreCase("ok") || new JSONObject(answer).get("error") == null) {
+                throw new Exception();
+            }
+            getParent().sendToast("Событие успешно изменено!", true);
+        } catch (Exception e) {
+            getParent().sendToast("Ошибка в изменении события!", false);
         }
-        if (shortDescription.length() < 0 || shortDescription.length() > 100) {
-            getParent().sendToast("Неверное кол-во символов у краткого описания", true);
-            return;
-        }
-        if (longDescription.length() < 0 || longDescription.length() > 1000) {
-            getParent().sendToast("Неверное кол-во символов у полного описания", true);
-            return;
-        }
-        Connect.send("event_edit",
-                "id", String.valueOf(event.getId()),
-                "name", name,
-                "longitude", String.valueOf(event.getLocation().longitude),
-                "latitude", String.valueOf(event.getLocation().latitude),
-                "s_description", shortDescription,
-                "l_description", longDescription,
-                "type", String.valueOf(event.getTypeId()),
-                "cost", String.valueOf(event.getCost()),
-                "time", String.valueOf(event.getTime()),
-                "token", getParent().myProfile.getToken()
-        );
+
     }
 
     private void sendCommentToServer(Comment comment, Event event) {
@@ -353,16 +369,20 @@ public class EventLayoutContent extends Content {
         );
     }
 
+    private void removeEvent(Event event) {
+        Connect.send("deleteevent",
+                "main_id", String.valueOf(event.getOwnerId()),
+                "id", String.valueOf(event.getId()),
+                "token", getParent().myProfile.getToken()
+        );
+        getParent().startContent(EventSearchContent.class);
+    }
+
     @Override
     public int layout() {
         return R.layout.event_layout;
     }
 
-
-    private void removeEvent(Event event) {
-
-
-    }
 
     private AlertDialog createTypesDialog() {
         AlertDialog.Builder ad = new AlertDialog.Builder(getParent());

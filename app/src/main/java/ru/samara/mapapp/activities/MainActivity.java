@@ -25,6 +25,7 @@ import ru.samara.mapapp.activities.contents.CreateEventContent;
 import ru.samara.mapapp.activities.contents.EventSearchContent;
 import ru.samara.mapapp.cache.Conservation;
 import ru.samara.mapapp.data.MyProfile;
+import ru.samara.mapapp.qr.IntentIntegrator;
 import ru.samara.mapapp.server.Connect;
 
 public class MainActivity extends AppCompatActivity

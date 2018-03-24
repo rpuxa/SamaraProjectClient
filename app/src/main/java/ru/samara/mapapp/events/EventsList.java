@@ -29,9 +29,9 @@ public class EventsList extends BaseAdapter {
     }
 
     public void addEvent(int id, Integer typeId, LatLng location, String name, String shortDescription, String longDescription,
-                         GregorianCalendar date, int cost, int ownerId) {
+                         GregorianCalendar date, int cost, int ownerId, int rating, int peopleCount) {
         events.add(new Event(
-                id, typeId, location, name, shortDescription, longDescription, date, cost, ownerId, mainEventList, activity
+                id, typeId, location, name, shortDescription, longDescription, date, cost, ownerId, peopleCount, rating, mainEventList, activity
         ));
 
         Collections.sort(events, (o1, o2) -> {

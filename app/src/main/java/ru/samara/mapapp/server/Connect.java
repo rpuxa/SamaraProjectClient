@@ -43,7 +43,6 @@ public final class Connect extends AsyncTask<String, Void, String> {
                         new InputStreamReader(connection.getInputStream(), "utf8"));
                 StringBuilder answer = new StringBuilder();
                 String line;
-
                 while ((line = reader.readLine()) != null) {
                     answer.append(line);
                 }
